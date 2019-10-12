@@ -71,9 +71,9 @@ cmake-build-debug/CMakeFiles/TargetDirectories.txt
 cmake-build-debug/graphs_el_jesuita_y_sus_apostoles.cbp
 cmake-build-debug/Makefile
 .idea/.name
-build/conan.lock
-build/conanbuildinfo.cmake
-build/conanbuildinfo.txt
-build/conaninfo.txt
-build/graph_info.json
+cmake-build-debug/build/conan.lock
+cmake-build-debug/build/conanbuildinfo.cmake
+cmake-build-debug/build/conanbuildinfo.txt
+cmake-build-debug/build/conaninfo.txt
+cmake-build-debug/build/graph_info.json
 conanfile.txt
