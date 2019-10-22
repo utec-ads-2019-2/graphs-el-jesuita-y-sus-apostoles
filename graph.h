@@ -18,6 +18,7 @@ class Graph{
     int edges = 0;
     int corner = 0;
     double density=0;
+    bool isDirected=false;
     bool isConex = false;
     bool isBipar = false;
     void makeblank(){
@@ -214,6 +215,23 @@ public:
         }
         isConex = true;
         return isConex;
+    }
+
+    bool setIsDirected(){
+        if(edges%2 == 1){
+            return false;
+       }
+        for (auto it = Nodes->begin(); it != Nodes->end() ; it++) {
+            list<Edge<T>*> edges2 = *(it->second->getEdges());
+            for (int i = 0; i< edges2.size()+1;i++) {
+                int id = edges2.front()->getTo()->getID();
+                edges2.pop_front();
+                if(!findEdge(it->first, id) or !findEdge(id,it->first)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     void setCorner(int _corner){corner=_corner;}
