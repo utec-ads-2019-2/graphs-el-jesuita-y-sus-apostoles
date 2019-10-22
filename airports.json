@@ -18896,42 +18896,6 @@
     ]
   },
   {
-    "City": "Praia",
-    "Name": "Praia International Airport",
-    "Country": " Santiago Island",
-    "Longitude": "14.9245",
-    "Latitude": "GVNP",
-    "Id": "5674",
-    "destinations": [
-      "1050",
-      "1074",
-      "5665",
-      "1084",
-      "973",
-      "1054",
-      "1638",
-      "3448",
-      "1103",
-      "1382",
-      "2559",
-      "1104",
-      "5675",
-      "1102",
-      "1106"
-    ]
-  },
-  {
-    "City": "Sao Filipe",
-    "Name": "Sao Filipe Airport",
-    "Country": " Fogo Island",
-    "Longitude": "14.885",
-    "Latitude": "GVSF",
-    "Id": "5675",
-    "destinations": [
-      "5674"
-    ]
-  },
-  {
     "City": "Joplin",
     "Name": "Joplin Rgnl",
     "Country": "United States",
@@ -49239,24 +49203,6 @@
       "529",
       "5566",
       "5571"
-    ]
-  },
-  {
-    "City": "Doncaster",
-    "Name": "Robin Hood Doncaster Sheffield Airport",
-    "Country": " Sheffield",
-    "Longitude": "53.474722",
-    "Latitude": "EGCN",
-    "Id": "5562",
-    "destinations": [
-      "499",
-      "3998",
-      "668",
-      "671",
-      "674",
-      "3959",
-      "679",
-      "680"
     ]
   },
   {

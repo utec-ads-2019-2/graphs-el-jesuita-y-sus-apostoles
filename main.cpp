@@ -1,10 +1,20 @@
 #include <iostream>
-
-#include "graph.h"
+#include "nlohmann/json.hpp"
+#include "functions.cpp"
+#include "Node.h"
 
 using namespace std;
+using json = nlohmann::json;
 
-int main(int argc, char *argv[]) {
-    graph test;
-    return EXIT_SUCCESS;
+int main() {
+    ifstream ifs("/Users/Usuario/Documents/Estudio/GitHub/Grafo01/bipartito.json");
+    if (ifs.fail()){cout<<"error"<<endl; exit(-1);}
+    json json1 =json::parse(ifs);
+    Graph<Airport>* graph = buildGraph(json1);
+    if(graph->setIsConex()){
+        cout<<"conexo"<<endl;
+    }
+    if(graph->setIsBipar()){
+        cout<<"Es bipartito"<<endl;
+    }
 }

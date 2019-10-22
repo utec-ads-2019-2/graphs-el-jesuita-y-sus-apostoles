@@ -1,0 +1,51 @@
+[
+  {
+    "City": "Fantasiland",
+    "Name": "Fantasiland Airport",
+    "Country": "Imsgine",
+    "Longitude": "-80.785278",
+    "Latitude": "54.910278",
+    "Id": "10452",
+    "destinations": [
+      "5492",
+      "188",
+      "5502"
+    ]
+  },{
+  "City": "Fantasiland",
+  "Name": "Fantasiland Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "10452",
+  "destinations": [
+    "5492",
+    "188",
+    "5502"
+  ]
+},{
+  "City": "Fantasiland",
+  "Name": "Fantasiland Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "10452",
+  "destinations": [
+    "5492",
+    "188",
+    "5502"
+  ]
+  },{
+  "City": "Fantasiland",
+  "Name": "Fantasiland Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "10452",
+  "destinations": [
+    "5492",
+    "188",
+    "5502"
+  ]
+}
+]

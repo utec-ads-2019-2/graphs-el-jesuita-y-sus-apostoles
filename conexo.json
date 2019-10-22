@@ -1,0 +1,147 @@
+[
+  {
+    "City": "Node 1",
+    "Name": "Node 1 Airport",
+    "Country": "Imsgine",
+    "Longitude": "-80.785278",
+    "Latitude": "54.910278",
+    "Id": "1",
+    "destinations": [
+      "2",
+      "4",
+      "6",
+      "8"
+    ]
+  },{
+  "City": "Node 2",
+  "Name": "Node 2 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "2",
+  "destinations": [
+    "1",
+    "7",
+    "11"
+  ]
+},{
+  "City": "Node 3",
+  "Name": "Node 3 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "3",
+  "destinations": [
+    "4",
+    "2"
+  ]
+  },{
+  "City": "Node 4",
+  "Name": "Node 4 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "4",
+  "destinations": [
+    "1",
+    "7",
+    "9"
+  ]
+},{
+  "City": "Node 5",
+  "Name": "Node 5 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "5",
+  "destinations": [
+    "2",
+    "10",
+    "11"
+  ]
+},{
+  "City": "Node 6",
+  "Name": "Node 6 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "6",
+  "destinations": [
+    "11",
+    "7"
+  ]
+},{
+  "City": "Node 7",
+  "Name": "Node 7 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "7",
+  "destinations": [
+    "10",
+    "2",
+    "12"
+  ]
+},{
+  "City": "Node 8",
+  "Name": "Node 8 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "8",
+  "destinations": [
+    "5",
+    "11"
+  ]
+},{
+  "City": "Node 9",
+  "Name": "Node 9 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "9",
+  "destinations": [
+    "10",
+    "12",
+    "2"
+  ]
+},{
+  "City": "Node 10",
+  "Name": "Node 10 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "10",
+  "destinations": [
+    "11",
+    "3",
+    "5"
+  ]
+},{
+  "City": "Node 11",
+  "Name": "Node 11 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "11",
+  "destinations": [
+    "10",
+    "8",
+    "6",
+    "12",
+    "7"
+  ]
+},{
+  "City": "Node 12",
+  "Name": "Node 12 Airport",
+  "Country": "Imsgine",
+  "Longitude": "-80.785278",
+  "Latitude": "54.910278",
+  "Id": "12",
+  "destinations": [
+    "7",
+    "3",
+    "1"
+  ]
+}
+]

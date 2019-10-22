@@ -1,13 +1,34 @@
-#ifndef EDGE_H
-#define EDGE_H
+//
+// Created by Usuario on 05/10/2019.
+//
 
-template <typename G>
-class Edge {
-    typedef typename G::E E;
-    typedef typename G::node node;
+#ifndef GRAFO01_EDGE_H
+#define GRAFO01_EDGE_H
+template <class U>
+class Node;
 
-    E data;
-    node* nodes[2];
+template <class T>
+class Edge{
+    Node<T>* To;
+    Node<T>* From;
+    double weight;
+public:
+    Edge(){To = nullptr, From = nullptr, weight = 0;};
+
+    void setTo(Node<T>* node){To = node;}
+
+    void setFrom(Node<T>* node){From = node;}
+
+    void setWeight(double w){weight = w;}
+
+    Node<T>* getTo(){ return To;}
+
+    Node<T>* getFrom(){ return From;}
+
+    ~Edge(){
+        delete To,From;
+        To = nullptr;
+        From = nullptr;
+    }
 };
-
-#endif
+#endif //GRAFO01_EDGE_H
