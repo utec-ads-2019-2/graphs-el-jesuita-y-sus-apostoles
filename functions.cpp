@@ -6,6 +6,7 @@
 #include <fstream>
 #include <utility>
 #include <thread>
+#include <cmath>
 
 using pareja = pair<int,Node<Airport>*>;
 
@@ -62,7 +63,16 @@ void deleteAirportFromGraph(Graph<Airport>* graph, int idTo){
 
 
 double calculateWeight(double x1, double x2, double y1, double y2){
-    return sqrt(pow(x1-x2,2) + pow(y1-y2,2) );
+    double distanceBetweenLatitudes = (x2 - x1) *
+                  M_PI / 180.0;
+    double distanceBetweenLongitudes = (y2 - y1) *
+                  M_PI / 180.0;
+
+    x1 *= M_PI / 180.0;
+    x2 *= M_PI / 180.0;
+
+    return 12742 * asin(sqrt(pow(sin(distanceBetweenLatitudes / 2), 2) +
+                             pow(sin(distanceBetweenLongitudes / 2), 2) * cos(x1) * cos(x2)));
 }
 
 void buildEdgeFromGraph(map<int,Node<Airport>*>* Nodes, Node<Airport>* node, Graph<Airport>* graph){
