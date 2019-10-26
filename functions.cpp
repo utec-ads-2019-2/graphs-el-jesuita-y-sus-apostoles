@@ -82,8 +82,7 @@ void buildEdgeFromGraph(map<int,Node<Airport>*>* Nodes, Node<Airport>* node, Gra
                 (node->getEdges())->push_back(edge);
             }
         }
-        auto* edge1 = new Edge<Airport>();
-        (node->getEdges())->push_back(edge1);
+
     } else cout<<"error"<<endl;
 }
 

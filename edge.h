@@ -21,6 +21,8 @@ public:
 
     void setWeight(double w){weight = w;}
 
+    int getWeight(){ return weight;}
+
     Node<T>* getTo(){ return To;}
 
     Node<T>* getFrom(){ return From;}
