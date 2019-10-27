@@ -18,19 +18,27 @@ class Graph{
     int edges = 0;
     int corner = 0;
     double density=0;
-    bool isDirected=false;
+    bool isNotDirected=false;
     bool isConex = false;
     bool isBipar = false;
+
+    void DeleteAllEdges(int idNode){
+        for (auto i = Nodes->begin(); i != Nodes->end() ; ++i) {
+            deleteEdge(i->first, idNode);
+        }
+    }
+
     void makeblank(){
         for ( auto it = Nodes->begin(); it != Nodes->end(); it++) {
             (it->second)->setColor('B');
         }
     }
+
     bool testBipartito(Node<T>* toTest, char color){
         int FinalValue= toTest->getEdges()->size();
         int thisValue=0;
         if (color == 'R'){
-            for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue-1 ; ++it, thisValue++) {
+            for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue ; ++it, thisValue++) {
                 if((*it)->getTo()->getColor() == 'B' ){
                     (*it)->getTo()->setColor('A');
                     return testBipartito((*it)->getTo(), 'A');
@@ -41,7 +49,7 @@ class Graph{
                 } else throw invalid_argument("Memory failure");
                 }
         }else if (color == 'A') {
-            for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue-1 ; ++it, thisValue++) {
+            for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue ; ++it, thisValue++) {
                 if((*it)->getTo()->getColor() == 'B' ){
                     (*it)->getTo()->setColor('R');
                     return testBipartito((*it)->getTo(), 'R');
@@ -54,6 +62,49 @@ class Graph{
         }
         return true;
     }
+
+    bool findEdge(int idFrom, int idTo, std::_List_iterator<Edge<Airport>*> & guidePtr ){
+        if (Nodes->operator[](idFrom) == nullptr){
+            Nodes->erase(idFrom);
+            return false;
+        }else if (Nodes->operator[](idTo) == nullptr) {
+            Nodes->erase(idTo);
+            return false;
+        }else{
+            auto* From = Nodes->operator[](idFrom);
+            auto* toCompare = Nodes->operator[](idTo);
+            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
+                Edge<Airport>* edge = *i;
+                if(edge->getTo() == toCompare ){
+                    guidePtr = (i);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    list<Edge<T>* >* GetOrderEdges(){
+        auto respt= new list<Edge<T>*>;
+        for (auto it_Nodes = Nodes->begin(); it_Nodes != Nodes->end() ; it_Nodes++) {
+            Node<T>* actual = it_Nodes->second;
+            for (auto it_edges = actual->getEdges()->begin(); it_edges != actual->getEdges()->end() ; it_edges++) {
+                if(respt->size() == 0){
+                    respt->push_back(*(it_edges));
+                }else{
+                    int control_size = 0;
+                    typename list<Edge<T>*>::iterator it = respt->begin();
+                    while (control_size<respt->size() and (*it_edges)->getWeight()<(*it)->getWeight()){
+                        control_size++;
+                        it++;
+                    }
+                    respt->insert((it),(*it_edges));
+                }
+            }
+        }
+        return respt;
+    }
+
 public:
     Graph(){Nodes = new map< int , Node<T>* >;}
 
@@ -61,12 +112,15 @@ public:
 
     bool insertEgde(int idFrom, int idTo){
         if (Nodes->operator[](idFrom) != nullptr and Nodes->operator[](idTo) != nullptr){
-            auto* edge = new Edge<T>;
-            edge->setTo(Nodes->operator[](idTo));
-            edge->setFrom(Nodes->operator[](idFrom));
-            Nodes->operator[](idFrom)->getEdges()->push_front(edge);
-            edges++;
-            return true;
+            if(!findEdge(idFrom,idTo)){
+                auto* edge = new Edge<T>;
+                edge->setTo(Nodes->operator[](idTo));
+                edge->setFrom(Nodes->operator[](idFrom));
+                Nodes->operator[](idFrom)->getEdges()->push_front(edge);
+                edges++;
+                return true;
+            }else return false;
+
         } else{
             if (Nodes->operator[](idFrom) == nullptr){
                 Nodes->erase(idFrom);}
@@ -109,12 +163,6 @@ public:
         }
     }
 
-    void DeleteAllEdges(int idNode){
-        for (auto i = Nodes->begin(); i != Nodes->end() ; ++i) {
-            deleteEdge(i->first, idNode);
-        }
-    }
-
     ~Graph(){
         delete Nodes;
     }
@@ -133,27 +181,6 @@ public:
                 Edge<Airport>* edge = *i;
                 if(edge->getTo() == toCompare )
                     return true;
-            }
-            return false;
-        }
-    }
-
-    bool findEdge(int idFrom, int idTo, std::list<Edge<Airport>*>::iterator & guidePtr ){
-        if (Nodes->operator[](idFrom) == nullptr){
-            Nodes->erase(idFrom);
-            return false;
-        }else if (Nodes->operator[](idTo) == nullptr) {
-            Nodes->erase(idTo);
-            return false;
-        }else{
-            auto* From = Nodes->operator[](idFrom);
-            auto* toCompare = Nodes->operator[](idTo);
-            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
-                Edge<Airport>* edge = *i;
-                if(edge->getTo() == toCompare ){
-                    guidePtr = (i);
-                    return true;
-                }
             }
             return false;
         }
@@ -181,7 +208,35 @@ public:
     }
 
     Graph<T>* Krusca(){
-
+        if(setIsNotDirected()){
+            list<Edge<T>*>* Edges = this->GetOrderEdges();
+            Graph<T>* graph_Krusca = new Graph();
+            map<int,Node<T>*>* mapKrusca = graph_Krusca->getMap();
+            while(Edges->size()>0){
+                Node<T>* nodeTo = new Node<T>(Edges->back()->getTo()->getObject());
+                nodeTo->setID(nodeTo->getObject()->getId());
+                Node<T>* nodeFrom = new Node<T>(Edges->back()->getFrom()->getObject());
+                nodeFrom->setID(nodeFrom->getObject()->getId());
+                Edges->pop_back();
+                nodeTo->getEdges()->clear();
+                nodeFrom->getEdges()->clear();
+                //Hacer control para nodos.
+                if(mapKrusca->operator[](nodeFrom->getID()) == nullptr or mapKrusca->operator[](nodeTo->getID()) == nullptr){
+                    if (mapKrusca->operator[](nodeFrom->getID())== nullptr){
+                        mapKrusca->erase(nodeFrom->getID());
+                        mapKrusca->insert(pair<int,Node<T>*>(nodeFrom->getID(),nodeFrom));
+                    }
+                    if (mapKrusca->operator[](nodeTo->getID())== nullptr){
+                        mapKrusca->erase(nodeTo->getID());
+                        mapKrusca->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
+                    }
+                    graph_Krusca->insertEgde(nodeFrom->getID(),nodeTo->getID());
+                    graph_Krusca->insertEgde(nodeTo->getID(),nodeFrom->getID());
+                }
+            }
+            graph_Krusca->setCorner(graph_Krusca->getMap()->size());
+            return graph_Krusca;
+        }else return nullptr;
     }
 
     //in parir temp<bool,bool> first = in, second = out
@@ -200,7 +255,7 @@ public:
                 return isConex;
             }else {
                 *edges2 = *(ptr->getEdges());
-                for (int i = 0; i< edges2->size()+1;i++) {
+                for (int i = 0; i< edges2->size();i++) {
                     int id = edges2->front()->getTo()->getID();
                     edges2->pop_front();
                     temp.at(id).second=true;
@@ -217,21 +272,24 @@ public:
         return isConex;
     }
 
-    bool setIsDirected(){
+    bool setIsNotDirected(){
         if(edges%2 == 1){
-            return false;
+            isNotDirected= false;
+            return isNotDirected;
        }
         for (auto it = Nodes->begin(); it != Nodes->end() ; it++) {
             list<Edge<T>*> edges2 = *(it->second->getEdges());
-            for (int i = 0; i< edges2.size()+1;i++) {
+            for (int i = 0; i< edges2.size();i++) {
                 int id = edges2.front()->getTo()->getID();
                 edges2.pop_front();
                 if(!findEdge(it->first, id) or !findEdge(id,it->first)){
-                    return false;
+                    isNotDirected= false;
+                    return isNotDirected;
                 }
             }
         }
-        return true;
+        isNotDirected= true;
+        return isNotDirected;
     }
 
     void setCorner(int _corner){corner=_corner;}
