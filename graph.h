@@ -143,7 +143,7 @@ public:
     }
 
     bool deleteEdge(int idFrom, int idTo){
-        std::_List_iterator<Edge<Airport>*> nuevo;
+        std::list<Edge<Airport>*>::iterator nuevo;
         if (this->findEdge(idFrom,idTo, nuevo)){
             Nodes->operator[](idFrom)->getEdges()->erase(nuevo);
             edges--;
