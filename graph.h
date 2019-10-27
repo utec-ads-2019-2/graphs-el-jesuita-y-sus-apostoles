@@ -63,7 +63,7 @@ class Graph{
         return true;
     }
 
-    bool findEdge(int idFrom, int idTo, std::_List_iterator<Edge<Airport>*> & guidePtr ){
+    bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
         if (Nodes->operator[](idFrom) == nullptr){
             Nodes->erase(idFrom);
             return false;
@@ -143,7 +143,7 @@ public:
     }
 
     bool deleteEdge(int idFrom, int idTo){
-        std::list<Edge<Airport>*>::iterator nuevo;
+        typename std::list<Edge<T>*>::iterator nuevo;
         if (this->findEdge(idFrom,idTo, nuevo)){
             Nodes->operator[](idFrom)->getEdges()->erase(nuevo);
             edges--;

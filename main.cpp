@@ -7,7 +7,7 @@ using namespace std;
 using json = nlohmann::json;
 
 int main() {
-    ifstream ifs("/Users/Usuario/Documents/Estudio/GitHub/Grafo01/directed.json");
+    ifstream ifs("/Users/Usuario/Documents/Estudio/GitHub/Grafo01/notDirected.json");
     if (ifs.fail()){cout<<"error"<<endl; exit(-1);}
     json json1 =json::parse(ifs);
     Graph<Airport>* graph = buildGraph(json1);
@@ -23,5 +23,5 @@ int main() {
     if(graph->setIsNotDirected())
         cout<<"IS not directed"<<endl;
     graph->deleteNode(1);
-}
 
+}

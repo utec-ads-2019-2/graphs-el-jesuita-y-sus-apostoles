@@ -5,7 +5,6 @@
 #include "Graph.h"
 #include <fstream>
 #include <utility>
-#include <thread>
 #include <cmath>
 
 using pareja = pair<int,Node<Airport>*>;
@@ -64,9 +63,9 @@ void deleteAirportFromGraph(Graph<Airport>* graph, int idTo){
 
 double calculateWeight(double x1, double x2, double y1, double y2){
     double distanceBetweenLatitudes = (x2 - x1) *
-                  M_PI / 180.0;
+                                      M_PI / 180.0;
     double distanceBetweenLongitudes = (y2 - y1) *
-                  M_PI / 180.0;
+                                       M_PI / 180.0;
 
     x1 *= M_PI / 180.0;
     x2 *= M_PI / 180.0;
