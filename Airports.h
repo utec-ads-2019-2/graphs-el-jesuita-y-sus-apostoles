@@ -65,6 +65,23 @@ public:
     vector<int>* getDestinations() {
         return destination;
     }
+
+    const string &getCity() const {
+        return City;
+    }
+
+    const string &getName() const {
+        return Name;
+    }
+
+    const string &getCountry() const {
+        return Country;
+    }
+
+    vector<int> *getDestination() const {
+        return destination;
+    }
+
     ~Airport(){
         delete destination;
     }
