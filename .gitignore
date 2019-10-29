@@ -1,10 +1,11 @@
-nlohmann/
+/nlohmann/
 .idea/
 .DS_Store
 .idea/Grafo01.iml
 .idea/misc.xml
 .idea/modules.xml
 .idea/workspace.xml
+/cmake-build-debug/
 cmake-build-debug/airport.json
 cmake-build-debug/bin/Grafo01.exe
 cmake-build-debug/cmake_install.cmake
