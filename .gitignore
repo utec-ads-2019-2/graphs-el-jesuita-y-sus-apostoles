@@ -1,4 +1,5 @@
-
+.idea/
+cmake-build-debug/
 .idea/Grafo01.iml
 .idea/misc.xml
 .idea/modules.xml
@@ -55,3 +56,4 @@ Building/conanbuildinfo.txt
 Building/conaninfo.txt
 Building/graph_info.json
 .idea/vcs.xml
+/nlohmann/

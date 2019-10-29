@@ -1,7 +1,3 @@
-//
-// Created by Usuario on 05/10/2019.
-//
-
 #ifndef GRAFO01_AIRPORTS_H
 #define GRAFO01_AIRPORTS_H
 
@@ -24,14 +20,14 @@ private:
     vector<int> *destination;
 public:
     Airport(json json1) {
-        destination = new  vector<int>;
+        destination = new vector<int>;
         City = json1["City"];
         Name = json1["Name"];
         Country = json1["Country"];
-        string latid = json1["Latitude"];
-        Latitude = atof(latid.c_str());
-        string longi = json1["Longitude"];
-        Longitude = atof(longi.c_str());
+        string latitude = json1["Latitude"];
+        Latitude = atof(latitude.c_str());
+        string longitude = json1["Longitude"];
+        Longitude = atof(longitude.c_str());
         string id = json1["Id"];
         Id = atoi(id.c_str());
         json json2 = json1["destinations"];
@@ -40,26 +36,35 @@ public:
             destination->push_back(atoi(desti.c_str()));
         }
     }
-    void printAirport(){
-        cout<<City<<endl;
-        cout<<Name<<endl;
-        cout<<Country<<endl;
-        cout<<Longitude<<endl;
-        cout<<Latitude<<endl;
-        cout<<Id<<endl;
-        cout<<"Destination:"<<endl;
-        for (auto i = destination->begin(); i != destination->end() ; i++) {
-            cout<<"   "<<*i<<endl;
+
+    void printAirport() {
+        cout << City << endl;
+        cout << Name << endl;
+        cout << Country << endl;
+        cout << Longitude << endl;
+        cout << Latitude << endl;
+        cout << Id << endl;
+        cout << "Destination:" << endl;
+        for (int & i : *destination) {
+            cout << "   " << i << endl;
         }
     }
 
-    double getLatitude(){ return Latitude;}
+    double getLatitude() {
+        return Latitude;
+    }
 
-    double getLongitude(){ return Longitude;}
+    double getLongitude() {
+        return Longitude;
+    }
 
-    int getId(){ return Id;}
+    int getId() {
+        return Id;
+    }
 
-    vector<int>* getDestinations(){ return destination;}
+    vector<int>* getDestinations() {
+        return destination;
+    }
 };
 
 #endif //GRAFO01_AIRPORTS_H

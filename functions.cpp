@@ -2,12 +2,12 @@
 // Created by Usuario on 05/10/2019.
 //
 #include "Airports.h"
-#include "Graph.h"
+#include "graph.h"
 #include <fstream>
 #include <utility>
 #include <cmath>
 
-using pareja = pair<int,Node<Airport>*>;
+using pairOfIntsAndNodes = pair<int,Node<Airport>*>;
 
 Airport* newAirport(json dato){
     Airport* newAir;
@@ -45,21 +45,10 @@ void HalfDestinationDelete(Graph<Airport>* graph, int idTo){
     }
 }
 
-
-void SecondHalfDestinationDelete(Graph<Airport>* graph, int idTo){
-    auto it = graph->getMap()->rbegin();
-    for (int i = 0; i < (graph->getMap()->size()) ; i++) {
-        deleteDestinationAirport(graph,it->first,idTo);
-        it++;
-    }
-}
-
 void deleteAirportFromGraph(Graph<Airport>* graph, int idTo){
     HalfDestinationDelete(graph,idTo);
     graph->deleteNode(idTo);
 }
-
-
 
 double calculateWeight(double x1, double x2, double y1, double y2){
     double distanceBetweenLatitudes = (x2 - x1) *
@@ -75,13 +64,13 @@ double calculateWeight(double x1, double x2, double y1, double y2){
 }
 
 void buildEdgeFromGraph(map<int,Node<Airport>*>* Nodes, Node<Airport>* node, Graph<Airport>* graph){
-    if(node != nullptr){
+    if(node != nullptr) {
         vector<int>* destination = (node->getObject())->getDestinations();
         for (int & i : *destination) {
             auto * edge = new Edge<Airport>();
-            if(Nodes->operator[](i) == nullptr){
+            if (Nodes->operator[](i) == nullptr) {
                 Nodes->erase(i);
-            }else{
+            } else {
                 graph->setEdges(graph->getEdges()+1);
                 edge->setFrom(node);
                 edge->setTo(Nodes->operator[](i));
@@ -100,22 +89,32 @@ Graph<Airport>* buildGraph(json file){
     auto* graph = new Graph<Airport>();
     json json1 = std::move(file);
     map< int, Node<Airport>* >* maps = graph->getMap();
-    for (int i = 0; i < json1.size(); i++) {
-        json json2 = json1[i];
+    for (const auto& json2 : json1) {
         auto* airport = new Airport(json2);
         auto* node = new Node<Airport>(airport);
         node->setID(node->getObject()->getId());
-        (maps)->insert(pareja(node->getID(),node));
+        (maps)->insert(pairOfIntsAndNodes(node->getID(),node));
     }
-    int corer = json1.size();
-    graph->setCorner(corer);
+    int vertexes = json1.size();
+    graph->setVertexes(vertexes);
     for (auto j = maps->begin(); j != maps->end(); j++) {
-        if (j->second != nullptr){
-            if(j->second )
-                buildEdgeFromGraph(maps, j->second, graph);
-        }else {cout<<j->first<<" "<<endl;}
+        if (j->second != nullptr)
+            buildEdgeFromGraph(maps, j->second, graph);
+        else
+            cout<<j->first<<" "<<endl;
     }
     return graph;
 }
 
+Graph<Airport>* readJsonAndReturnAirportGraph(const string& nameOfJSON) {
+    ifstream ifs(nameOfJSON);
+    if (ifs.fail()) {
+        cout << "Failed loading JSON" << endl;
+        return nullptr;
+    }
 
+    json ifsJSON = json::parse(ifs);
+
+    Graph<Airport>* graph = buildGraph(ifsJSON);
+    return graph;
+}
