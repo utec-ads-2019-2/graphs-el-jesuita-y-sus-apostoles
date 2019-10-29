@@ -292,7 +292,7 @@ public:
                     graph_Krusca->insertEgde(nodeTo->getID(),nodeFrom->getID());
                 }
             }
-            graph_Krusca->setCorner(graph_Krusca->getMap()->size());
+            graph_Krusca->setVertexes(graph_Krusca->getMap()->size());
             return graph_Krusca;
         }else return nullptr;
     }
@@ -349,7 +349,7 @@ public:
         return isNotDirected;
     }
 
-    void setCorner(int _corner){numberOfVertexes=_corner;}
+    void setVertexes(int _corner){numberOfVertexes=_corner;}
 
     int getEdges(){ return numberOfEdges;}
 
