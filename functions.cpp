@@ -21,7 +21,7 @@ Airport* newAirport(json dato){
 }
 
 void newDestinationAirport(Graph<Airport>* graph,int idFrom, int idTo){
-    if(graph->insertEdge(idFrom,idTo))
+    if(graph->insertEgde(idFrom,idTo))
         graph->getMap()->at(idFrom)->getObject()->getDestinations()->push_back(idTo);
 }
 
@@ -64,16 +64,19 @@ double calculateWeight(double x1, double x2, double y1, double y2){
 }
 
 void buildEdgeFromGraph(map<int,Node<Airport>*>* Nodes, Node<Airport>* node, Graph<Airport>* graph){
-    if(node != nullptr) {
+    if(node != nullptr){
         vector<int>* destination = (node->getObject())->getDestinations();
         for (int & i : *destination) {
+            // por qué hay un edge de tipo airport, no se supone que esto solo se asigna a vertices?
             auto * edge = new Edge<Airport>();
-            if (Nodes->operator[](i) == nullptr) {
+            if(Nodes->operator[](i) == nullptr){
+                // por qué verificas esto? por qué borras el nodo?
                 Nodes->erase(i);
-            } else {
+            }else{
                 graph->setEdges(graph->getEdges()+1);
                 edge->setFrom(node);
                 edge->setTo(Nodes->operator[](i));
+                // se supone que x1 es otro aeropuerto?
                 double x1 = node->getObject()->getLatitude(), y1 = node->getObject()->getLongitude();
                 double x2 = Nodes->operator[](i)->getObject()->getLatitude(), y2 = Nodes->operator[](i)->getObject()->getLongitude();
                 edge->setWeight(calculateWeight(x1,x2,y1,y2));
@@ -96,7 +99,7 @@ Graph<Airport>* buildGraph(json file){
         (maps)->insert(pairOfIntsAndNodes(node->getID(),node));
     }
     int vertexes = json1.size();
-    graph->setVertexes(vertexes);
+    graph->setCorner(vertexes);
     for (auto j = maps->begin(); j != maps->end(); j++) {
         if (j->second != nullptr)
             buildEdgeFromGraph(maps, j->second, graph);
