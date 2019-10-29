@@ -35,3 +35,4 @@ int main() {
     delete notDirectedGraph;
     return EXIT_SUCCESS;
 }
+

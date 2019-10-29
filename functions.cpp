@@ -109,8 +109,7 @@ Graph<Airport>* buildGraph(json file){
 Graph<Airport>* readJsonAndReturnAirportGraph(const string& nameOfJSON) {
     ifstream ifs(nameOfJSON);
     if (ifs.fail()) {
-        cout << "Failed loading JSON" << endl;
-        return nullptr;
+        throw invalid_argument("File not found");
     }
 
     json ifsJSON = json::parse(ifs);
