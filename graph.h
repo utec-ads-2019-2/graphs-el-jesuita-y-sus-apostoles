@@ -42,6 +42,7 @@ class Graph{
             return false;
         }
     }
+    
 
     void deleteAllEdgesOfNode(int idNode){
         for (auto i = graphNodesMap->begin(); i != graphNodesMap->end() ; ++i) {
