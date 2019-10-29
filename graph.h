@@ -307,7 +307,8 @@ public:
                 return isConnected;
             }else {
                 *edges2 = *(ptr->getEdges());
-                for (int i = 0; i< edges2->size();i++) {
+                int edgesSize = edges2->size();
+                for (int i = 0; i< edgesSize;i++) {
                     int id = edges2->front()->getTo()->getID();
                     edges2->pop_front();
                     temp.at(id).second=true;
@@ -331,7 +332,8 @@ public:
         }
         for (auto it = graphNodesMap->begin(); it != graphNodesMap->end() ; it++) {
             list<Edge<T>*> edges2 = *(it->second->getEdges());
-            for (int i = 0; i< edges2.size();i++) {
+            int edgesSize = edges2.size();
+            for (int i = 0; i<edgesSize ;i++) {
                 int id = edges2.front()->getTo()->getID();
                 edges2.pop_front();
                 if(!findEdge(it->first, id) or !findEdge(id,it->first)){
