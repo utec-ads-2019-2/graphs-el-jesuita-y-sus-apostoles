@@ -37,7 +37,7 @@ public:
         }
     }
 
-    void printAirport(){
+    void printAirport() {
         cout << City << endl;
         cout << Name << endl;
         cout << Country << endl;
