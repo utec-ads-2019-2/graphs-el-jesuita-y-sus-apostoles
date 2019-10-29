@@ -57,3 +57,4 @@ Building/conaninfo.txt
 Building/graph_info.json
 .idea/vcs.xml
 /nlohmann/
+.DS_Store

@@ -218,7 +218,7 @@ public:
             primGraph[idOfSource] = graphNodesMap[idOfSource];
 
             //mientras que el número de vértices conectados sea menor que el número de vértices
-            while (numberOfVertexes >= numberOfVerticesAlreadyInThePrimGraph) {
+            while (numberOfVertexes > numberOfVerticesAlreadyInThePrimGraph) {
                 // guardar el edge que tenga el menor peso
                 list<Edge<T>*>* sortedEdgesWeightPrimGraph = primGraph->sortEdgesWeight();
                 Edge<T>* minEdgeWeight = sortedEdgesWeightPrimGraph->front();
