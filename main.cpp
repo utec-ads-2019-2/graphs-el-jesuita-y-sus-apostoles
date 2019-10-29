@@ -30,5 +30,7 @@ int main() {
     if (directedGraph->setIsNotDirected())
         cout << "The graph is directed" << endl;
 
+    delete bipartiteGraph;
+
     return EXIT_SUCCESS;
 }
