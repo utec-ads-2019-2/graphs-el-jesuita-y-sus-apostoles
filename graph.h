@@ -22,7 +22,28 @@ class Graph{
     bool isConnected = false;
     bool isBipartite = false;
 
-    void DeleteAllEdges(int idNode){
+    bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
+        if (graphNodesMap->operator[](idFrom) == nullptr){
+            graphNodesMap->erase(idFrom);
+            return false;
+        }else if (graphNodesMap->operator[](idTo) == nullptr) {
+            graphNodesMap->erase(idTo);
+            return false;
+        }else{
+            auto* From = graphNodesMap->operator[](idFrom);
+            auto* toCompare = graphNodesMap->operator[](idTo);
+            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
+                Edge<Airport>* edge = *i;
+                if(edge->getTo() == toCompare ){
+                    guidePtr = (i);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    void deleteAllEdges(int idNode){
         for (auto i = graphNodesMap->begin(); i != graphNodesMap->end() ; ++i) {
             deleteEdge(i->first, idNode);
         }
@@ -63,27 +84,6 @@ class Graph{
         return true;
     }
 
-    bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
-        if (graphNodesMap->operator[](idFrom) == nullptr){
-            graphNodesMap->erase(idFrom);
-            return false;
-        }else if (graphNodesMap->operator[](idTo) == nullptr) {
-            graphNodesMap->erase(idTo);
-            return false;
-        }else{
-            auto* From = graphNodesMap->operator[](idFrom);
-            auto* toCompare = graphNodesMap->operator[](idTo);
-            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
-                Edge<Airport>* edge = *i;
-                if(edge->getTo() == toCompare ){
-                    guidePtr = (i);
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     list<Edge<T>* >* sortEdgesWeight(){
         auto respt= new list<Edge<T>*>;
         for (auto it_Nodes = graphNodesMap->begin(); it_Nodes != graphNodesMap->end() ; it_Nodes++) {
@@ -109,6 +109,18 @@ public:
     Graph(){graphNodesMap = new map< int , Node<T>* >;}
 
     map< int , Node<T>* >* getMap(){ return graphNodesMap;}
+
+    int getEdges() {
+        return numberOfEdges;
+    }
+
+    void setEdges(int edges){
+        numberOfEdges=edges;
+    }
+
+    void setVertexes(int vertexes) {
+        numberOfVertexes = vertexes;
+    }
 
     bool insertEdge(int idFrom, int idTo){
         if (graphNodesMap->operator[](idFrom) != nullptr and graphNodesMap->operator[](idTo) != nullptr){
@@ -142,29 +154,15 @@ public:
         }
     }
 
-    bool deleteEdge(int idFrom, int idTo){
-        typename std::list<Edge<T>*>::iterator nuevo;
-        if (this->findEdge(idFrom,idTo, nuevo)){
-            graphNodesMap->operator[](idFrom)->getEdges()->erase(nuevo);
-            numberOfEdges--;
-            return true;
-        }else
-            return false;
-    }
-
     bool deleteNode(int idNode){
         if(graphNodesMap->operator[](idNode) != nullptr){
             graphNodesMap->erase(idNode);
-            DeleteAllEdges(idNode);
+            deleteAllEdges(idNode);
             return true;
         }else {
             graphNodesMap->erase(idNode);
             return false;
         }
-    }
-
-    ~Graph(){
-        delete graphNodesMap;
     }
 
     bool findEdge(int idFrom, int idTo){
@@ -339,18 +337,6 @@ public:
         return isNotDirected;
     }
 
-    void setVertexes(int vertexes) {
-        numberOfVertexes = vertexes;
-    }
-
-    int getEdges() {
-        return numberOfEdges;
-    }
-
-    void setEdges(int edges){
-        numberOfEdges=edges;
-    }
-
     bool setIsBipartite(){
         setNodesBlank();
         auto it = graphNodesMap->begin();
@@ -358,6 +344,22 @@ public:
 
         isBipartite = testBipartite((it->second),'R');
         return isBipartite;
+    }
+
+    ~Graph(){
+        deleteAllEdges();
+        delete graphNodesMap;
+
+    }
+
+    bool deleteEdge(int idFrom, int idTo){
+        typename std::list<Edge<T>*>::iterator nuevo;
+        if (this->findEdge(idFrom,idTo, nuevo)){
+            graphNodesMap->operator[](idFrom)->getEdges()->erase(nuevo);
+            numberOfEdges--;
+            return true;
+        }else
+            return false;
     }
 }
 

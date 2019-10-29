@@ -21,7 +21,7 @@ Airport* newAirport(json dato){
 }
 
 void newDestinationAirport(Graph<Airport>* graph,int idFrom, int idTo){
-    if(graph->insertEgde(idFrom,idTo))
+    if(graph->insertEdge(idFrom,idTo))
         graph->getMap()->at(idFrom)->getObject()->getDestinations()->push_back(idTo);
 }
 
