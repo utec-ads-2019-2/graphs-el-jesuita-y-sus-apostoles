@@ -65,6 +65,9 @@ public:
     vector<int>* getDestinations() {
         return destination;
     }
+    ~Airport(){
+        delete destination;
+    }
 };
 
 #endif //GRAFO01_AIRPORTS_H

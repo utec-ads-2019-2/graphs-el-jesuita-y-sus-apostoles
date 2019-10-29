@@ -13,7 +13,7 @@ class Node {
     T* Object;
     list< Edge<T>* >* listOfEdges;
     Node<T>* selfPtr;
-    int Id{};
+    int Id;
     char color;
 public:
     explicit Node(T* object){
@@ -38,6 +38,7 @@ public:
         delete Object;
         selfPtr = nullptr;
         Object = nullptr;
+        listOfEdges = nullptr;
     }
 
     void setColor(char c) {
