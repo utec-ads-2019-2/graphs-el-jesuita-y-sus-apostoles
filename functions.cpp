@@ -6,6 +6,7 @@
 #include <fstream>
 #include <utility>
 #include <cmath>
+#include <iomanip>
 
 using pairOfIntsAndNodes = pair<int,Node<Airport>*>;
 
@@ -84,6 +85,34 @@ void buildEdgeFromGraph(map<int,Node<Airport>*>* Nodes, Node<Airport>* node, Gra
     } else cout<<"error"<<endl;
 }
 
+void parseToJsonTxt(Graph<Airport>* graph,  const string& fileout){
+    ofstream ofs(fileout);
+    int sizeOfGraph = graph->getMap()->size();
+    map<int,Node<Airport>*>::iterator iterator = graph->getMap()->begin();
+    json finalParsedJson;
+    for (int i = 0; i < sizeOfGraph; i++) {
+        Airport* airportActual = iterator->second->getObject();
+        list<Edge<Airport>*>* edgeActual = iterator->second->getEdges();
+        std::vector<int> destinos;
+        for (list<Edge<Airport>*>::iterator j = edgeActual->begin(); j != edgeActual->end(); ++j) {
+            destinos.push_back((*j)->getTo()->getID());
+        }
+        json departures(destinos);
+        json parsedJson = {
+                {"City", airportActual->getCity()},
+                {"Name", airportActual->getName()},
+                {"Country", airportActual->getCountry()},
+                {"Longitude", airportActual->getLongitude()},
+                {"Latitude", airportActual->getLatitude()},
+                {"Id", airportActual->getId()}
+        };
+        parsedJson["destinations"] = departures;
+        finalParsedJson.push_back(parsedJson);
+        iterator++;
+    }
+    ofs<<std::setw(4)<<finalParsedJson<<endl;
+
+}
 
 Graph<Airport>* buildGraph(json file){
     auto* graph = new Graph<Airport>();
