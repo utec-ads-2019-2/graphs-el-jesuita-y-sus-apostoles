@@ -43,9 +43,15 @@ class Graph{
         }
     }
 
-    void deleteAllEdges(int idNode){
+    void deleteAllEdgesOfNode(int idNode){
         for (auto i = graphNodesMap->begin(); i != graphNodesMap->end() ; ++i) {
             deleteEdge(i->first, idNode);
+        }
+    }
+
+    void deleteAllEdges() {
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it) {
+            deleteAllEdgesOfNode(it->first);
         }
     }
 
@@ -157,7 +163,7 @@ public:
     bool deleteNode(int idNode){
         if(graphNodesMap->operator[](idNode) != nullptr){
             graphNodesMap->erase(idNode);
-            deleteAllEdges(idNode);
+            deleteAllEdgesOfNode(idNode);
             return true;
         }else {
             graphNodesMap->erase(idNode);
@@ -349,7 +355,6 @@ public:
     ~Graph(){
         deleteAllEdges();
         delete graphNodesMap;
-
     }
 
     bool deleteEdge(int idFrom, int idTo){

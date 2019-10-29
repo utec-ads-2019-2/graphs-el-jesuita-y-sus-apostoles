@@ -15,15 +15,15 @@ class Edge;
 template <class T>
 class Node {
     T* Object;
-    list< Edge<T>* >* edge;
+    list< Edge<T>* >* listOfEdges;
     Node<T>* selfPtr;
-    int Id;
+    int Id{};
     char color;
 public:
-    Node(T* object){
+    explicit Node(T* object){
         Object = object;
         selfPtr = this;
-        edge = new list<Edge<T>*>;
+        listOfEdges = new list<Edge<T>*>;
         color = 'B';}
 
     void setID(int id){Id = id;}
@@ -32,21 +32,22 @@ public:
 
     char getColor(){ return color;}
 
-    list< Edge<T>* >* getEdges(){ return edge;}
+    list< Edge<T>* >* getEdges(){ return listOfEdges;}
 
     T* getObject(){ return Object;}
 
     ~Node(){
-        delete edge;
+        delete listOfEdges;
+        delete selfPtr;
+        delete Object;
         selfPtr = nullptr;
         Object = nullptr;
     }
 
-    void setColor(char color) {
-        Node::color = color;
+    void setColor(char c) {
+        Node::color = c;
     }
 
-    void grafic();
 };
 
 
