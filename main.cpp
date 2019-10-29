@@ -7,21 +7,31 @@ using namespace std;
 using json = nlohmann::json;
 
 int main() {
-    ifstream ifs("/Users/Usuario/Documents/Estudio/GitHub/Grafo01/notDirected.json");
-    if (ifs.fail()){cout<<"error"<<endl; exit(-1);}
-    json json1 =json::parse(ifs);
-    Graph<Airport>* graph = buildGraph(json1);
-    if (graph->findEdge(1,2))
-        cout<<"found"<<endl;
-    auto krusca=graph->Krusca();
-    if(graph->setIsConex()){
-        cout<<"conexo"<<endl;
-    }
-    if(graph->setIsBipar()){
-        cout<<"Es bipartito"<<endl;
-    }
-    if(graph->setIsNotDirected())
-        cout<<"IS not directed"<<endl;
-    graph->deleteNode(1);
+    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("jsonFiles/bipartito.json");
+    Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("jsonFiles/notDirected.json");
+    Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("jsonFiles/directed.json");
+    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("jsonFiles/conexo.json");
 
+    if (notDirectedGraph->findEdge(1,2))
+        cout << "Edge found" << endl;
+
+    //auto krusca=notDirectedGraph->Krusca();
+
+    if (connectedGraph->setIsConnected())
+        cout << "The graph is connected" << endl;
+
+    if(bipartiteGraph->setIsBipartite())
+        cout << "The graph is bipartite" << endl;
+
+    if(notDirectedGraph->setIsNotDirected())
+        cout << "The graph is not directed" << endl;
+
+    if (directedGraph->setIsNotDirected())
+        cout << "The graph is directed" << endl;
+
+    delete bipartiteGraph;
+    delete directedGraph;
+    delete connectedGraph;
+    delete notDirectedGraph;
+    return EXIT_SUCCESS;
 }
