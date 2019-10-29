@@ -269,8 +269,8 @@ public:
     Graph<T>* Kruskal(){
         if(setIsNotDirected()){
             list<Edge<T>*>* Edges = this->sortEdgesWeight();
-            Graph<T>* graph_Krusca = new Graph();
-            map<int,Node<T>*>* mapKrusca = graph_Krusca->getMap();
+            Graph<T>* kruskalgraph = new Graph();
+            map<int,Node<T>*>* kruskalMap = kruskalgraph->getMap();
             while(Edges->size()>0){
                 Node<T>* nodeTo = new Node<T>(Edges->back()->getTo()->getObject());
                 nodeTo->setID(nodeTo->getObject()->getId());
@@ -279,21 +279,21 @@ public:
                 Edges->pop_back();
                 nodeTo->getEdges()->clear();
                 nodeFrom->getEdges()->clear();
-                if(mapKrusca->operator[](nodeFrom->getID()) == nullptr or mapKrusca->operator[](nodeTo->getID()) == nullptr){
-                    if (mapKrusca->operator[](nodeFrom->getID())== nullptr){
-                        mapKrusca->erase(nodeFrom->getID());
-                        mapKrusca->insert(pair<int,Node<T>*>(nodeFrom->getID(),nodeFrom));
+                if(kruskalMap->operator[](nodeFrom->getID()) == nullptr or kruskalMap->operator[](nodeTo->getID()) == nullptr){
+                    if (kruskalMap->operator[](nodeFrom->getID())== nullptr){
+                        kruskalMap->erase(nodeFrom->getID());
+                        kruskalMap->insert(pair<int,Node<T>*>(nodeFrom->getID(),nodeFrom));
                     }
-                    if (mapKrusca->operator[](nodeTo->getID())== nullptr){
-                        mapKrusca->erase(nodeTo->getID());
-                        mapKrusca->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
+                    if (kruskalMap->operator[](nodeTo->getID())== nullptr){
+                        kruskalMap->erase(nodeTo->getID());
+                        kruskalMap->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
                     }
-                    graph_Krusca->insertEgde(nodeFrom->getID(),nodeTo->getID());
-                    graph_Krusca->insertEgde(nodeTo->getID(),nodeFrom->getID());
+                    kruskalgraph->insertEgde(nodeFrom->getID(),nodeTo->getID());
+                    kruskalgraph->insertEgde(nodeTo->getID(),nodeFrom->getID());
                 }
             }
-            graph_Krusca->setVertexes(graph_Krusca->getMap()->size());
-            return graph_Krusca;
+            kruskalgraph->setVertexes(kruskalgraph->getMap()->size());
+            return kruskalgraph;
         }else return nullptr;
     }
 
@@ -349,11 +349,17 @@ public:
         return isNotDirected;
     }
 
-    void setVertexes(int _corner){numberOfVertexes=_corner;}
+    void setVertexes(int vertexes) {
+        numberOfVertexes = vertexes;
+    }
 
-    int getEdges(){ return numberOfEdges;}
+    int getEdges() {
+        return numberOfEdges;
+    }
 
-    void setEdges(int Edges1){numberOfEdges=Edges1;}
+    void setEdges(int edges){
+        numberOfEdges=edges;
+    }
 
     bool setIsBipartite(){
         setNodesBlank();
