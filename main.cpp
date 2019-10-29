@@ -7,7 +7,6 @@ using namespace std;
 using json = nlohmann::json;
 
 int main() {
-
     Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("../jsonFiles/bipartito.json");
     Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/notDirected.json");
     Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("../jsonFiles/directed.json");
@@ -31,6 +30,8 @@ int main() {
         cout << "The graph is directed" << endl;
 
     delete bipartiteGraph;
-
+    delete directedGraph;
+    delete connectedGraph;
+    delete notDirectedGraph;
     return EXIT_SUCCESS;
 }

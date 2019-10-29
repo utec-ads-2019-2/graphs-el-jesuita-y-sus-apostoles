@@ -58,3 +58,4 @@ Building/conanbuildinfo.txt
 Building/conaninfo.txt
 Building/graph_info.json
 .idea/vcs.xml
+.idea/.name
