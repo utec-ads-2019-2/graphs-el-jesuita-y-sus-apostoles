@@ -358,6 +358,7 @@ public:
     ~Graph(){
         deleteAllEdges();
         delete graphNodesMap;
+        graphNodesMap = nullptr;
     }
 
     bool deleteEdge(int idFrom, int idTo){
