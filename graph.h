@@ -22,10 +22,37 @@ class Graph{
     bool isConnected = false;
     bool isBipartite = false;
 
-    // esto borra todos los numberOfEdges de un solo nodo?
-    void DeleteAllEdges(int idNode){
+    bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
+        if (graphNodesMap->operator[](idFrom) == nullptr){
+            graphNodesMap->erase(idFrom);
+            return false;
+        }else if (graphNodesMap->operator[](idTo) == nullptr) {
+            graphNodesMap->erase(idTo);
+            return false;
+        }else{
+            auto* From = graphNodesMap->operator[](idFrom);
+            auto* toCompare = graphNodesMap->operator[](idTo);
+            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
+                Edge<Airport>* edge = *i;
+                if(edge->getTo() == toCompare ){
+                    guidePtr = (i);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    
+
+    void deleteAllEdgesOfNode(int idNode){
         for (auto i = graphNodesMap->begin(); i != graphNodesMap->end() ; ++i) {
             deleteEdge(i->first, idNode);
+        }
+    }
+
+    void deleteAllEdges() {
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it) {
+            deleteAllEdgesOfNode(it->first);
         }
     }
 
@@ -64,28 +91,6 @@ class Graph{
         return true;
     }
 
-    bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
-        // por qué se borra?
-        if (graphNodesMap->operator[](idFrom) == nullptr){
-            graphNodesMap->erase(idFrom);
-            return false;
-        }else if (graphNodesMap->operator[](idTo) == nullptr) {
-            graphNodesMap->erase(idTo);
-            return false;
-        }else{
-            auto* From = graphNodesMap->operator[](idFrom);
-            auto* toCompare = graphNodesMap->operator[](idTo);
-            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
-                Edge<Airport>* edge = *i;
-                if(edge->getTo() == toCompare ){
-                    guidePtr = (i);
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     list<Edge<T>* >* sortEdgesWeight(){
         auto respt= new list<Edge<T>*>;
         for (auto it_Nodes = graphNodesMap->begin(); it_Nodes != graphNodesMap->end() ; it_Nodes++) {
@@ -112,8 +117,19 @@ public:
 
     map< int , Node<T>* >* getMap(){ return graphNodesMap;}
 
-    bool insertEgde(int idFrom, int idTo){
-        // por qué se verifica si son diferentes de nullptr
+    int getEdges() {
+        return numberOfEdges;
+    }
+
+    void setEdges(int edges){
+        numberOfEdges=edges;
+    }
+
+    void setVertexes(int vertexes) {
+        numberOfVertexes = vertexes;
+    }
+
+    bool insertEdge(int idFrom, int idTo){
         if (graphNodesMap->operator[](idFrom) != nullptr and graphNodesMap->operator[](idTo) != nullptr){
             if(!findEdge(idFrom,idTo)){
                 auto* edge = new Edge<T>;
@@ -125,7 +141,6 @@ public:
             }else return false;
 
         } else{
-            // por qué se ponen como nullptr
             if (graphNodesMap->operator[](idFrom) == nullptr){
                 graphNodesMap->erase(idFrom);}
             if (graphNodesMap->operator[](idTo) == nullptr){
@@ -146,30 +161,15 @@ public:
         }
     }
 
-    bool deleteEdge(int idFrom, int idTo){
-        // por qué se pone como typename
-        typename std::list<Edge<T>*>::iterator nuevo;
-        if (this->findEdge(idFrom,idTo, nuevo)){
-            graphNodesMap->operator[](idFrom)->getEdges()->erase(nuevo);
-            numberOfEdges--;
-            return true;
-        }else
-            return false;
-    }
-
     bool deleteNode(int idNode){
         if(graphNodesMap->operator[](idNode) != nullptr){
             graphNodesMap->erase(idNode);
-            DeleteAllEdges(idNode);
+            deleteAllEdgesOfNode(idNode);
             return true;
         }else {
             graphNodesMap->erase(idNode);
             return false;
         }
-    }
-
-    ~Graph(){
-        delete graphNodesMap;
     }
 
     bool findEdge(int idFrom, int idTo){
@@ -212,21 +212,14 @@ public:
     Graph<T>* Prim(int idOfSource){
         if (setIsNotDirected()) {
 
-            /* mientras que el numero de vertices actualmente en mi grafo sea menor que el numero de vertices
-             * guardar el edge que tenga el menor peso
-             * obtener el from y el to
-             * agregar edge al grafo
-             * sumar en uno la cantidad de vertices
-             * */
-
-            int numberOfVerticesAlreadyInThePrimGraph = 0;
+            int numberOfVerticesAlreadyInThePrimGraph = 1;
             auto* primGraph = new Graph();
             primGraph->insertNode(graphNodesMap[idOfSource]);
             map<int, Node<T>* >* primGraphMap = primGraph->getMap();
             primGraph[idOfSource] = graphNodesMap[idOfSource];
 
             //mientras que el número de vértices conectados sea menor que el número de vértices
-            while (numberOfVertexes >= numberOfVerticesAlreadyInThePrimGraph) {
+            while (numberOfVertexes > numberOfVerticesAlreadyInThePrimGraph) {
                 // guardar el edge que tenga el menor peso
                 list<Edge<T>*>* sortedEdgesWeightPrimGraph = primGraph->sortEdgesWeight();
                 Edge<T>* minEdgeWeight = sortedEdgesWeightPrimGraph->front();
@@ -245,25 +238,22 @@ public:
                 if (findNodeTo == nullptr) {
                     // si es nullptr quiere decir que todavia no es parte de mi grafo
 
+                    // aumentar en uno el número de vértices
+                    ++numberOfVerticesAlreadyInThePrimGraph;
+
                     // obtener id para meterlo en el map de prim
                     int idFromMinEdgeWeightNodeTo = minEdgeWeightNodeTo->getID();
+
+                    // meterlo en el map de prim
                     primGraph[idFromMinEdgeWeightNodeTo] = minEdgeWeightNodeTo;
+
+                    // agregarlo al grafo
+                    int idFrom = minEdgeWeightNodeFrom->getID();
+                    int idTo = minEdgeWeightNodeTo->getID();
+                    primGraph->insertEdge(idFrom, idTo);
                 }
 
             }
-
-
-            auto currentNode = graphNodesMap[idOfSource];
-            auto currentEdges = currentNode.getEdges();
-
-
-
-            list<Edge<T>*>* sortedEdgesWeight = this->sortEdgesWeight();
-
-
-            map<int, Node<T>*>* primMap = primGraph->getMap();
-            primGraph->insertNode(currentNode);
-
             return primGraph;
         } else {
             cout << "Can't find MST of directed graph" << endl;
@@ -271,11 +261,11 @@ public:
         }
     }
 
-    Graph<T>* Krusca(){
+    Graph<T>* Kruskal(){
         if(setIsNotDirected()){
             list<Edge<T>*>* Edges = this->sortEdgesWeight();
-            Graph<T>* graph_Krusca = new Graph();
-            map<int,Node<T>*>* mapKrusca = graph_Krusca->getMap();
+            Graph<T>* kruskalgraph = new Graph();
+            map<int,Node<T>*>* kruskalMap = kruskalgraph->getMap();
             while(Edges->size()>0){
                 Node<T>* nodeTo = new Node<T>(Edges->back()->getTo()->getObject());
                 nodeTo->setID(nodeTo->getObject()->getId());
@@ -284,26 +274,24 @@ public:
                 Edges->pop_back();
                 nodeTo->getEdges()->clear();
                 nodeFrom->getEdges()->clear();
-                //Hacer control para nodos.
-                if(mapKrusca->operator[](nodeFrom->getID()) == nullptr or mapKrusca->operator[](nodeTo->getID()) == nullptr){
-                    if (mapKrusca->operator[](nodeFrom->getID())== nullptr){
-                        mapKrusca->erase(nodeFrom->getID());
-                        mapKrusca->insert(pair<int,Node<T>*>(nodeFrom->getID(),nodeFrom));
+                if(kruskalMap->operator[](nodeFrom->getID()) == nullptr or kruskalMap->operator[](nodeTo->getID()) == nullptr){
+                    if (kruskalMap->operator[](nodeFrom->getID())== nullptr){
+                        kruskalMap->erase(nodeFrom->getID());
+                        kruskalMap->insert(pair<int,Node<T>*>(nodeFrom->getID(),nodeFrom));
                     }
-                    if (mapKrusca->operator[](nodeTo->getID())== nullptr){
-                        mapKrusca->erase(nodeTo->getID());
-                        mapKrusca->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
+                    if (kruskalMap->operator[](nodeTo->getID())== nullptr){
+                        kruskalMap->erase(nodeTo->getID());
+                        kruskalMap->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
                     }
-                    graph_Krusca->insertEgde(nodeFrom->getID(),nodeTo->getID());
-                    graph_Krusca->insertEgde(nodeTo->getID(),nodeFrom->getID());
+                    kruskalgraph->insertEdge(nodeFrom->getID(),nodeTo->getID());
+                    kruskalgraph->insertEdge(nodeTo->getID(),nodeFrom->getID());
                 }
             }
-            graph_Krusca->setCorner(graph_Krusca->getMap()->size());
-            return graph_Krusca;
+            kruskalgraph->setVertexes(kruskalgraph->getMap()->size());
+            return kruskalgraph;
         }else return nullptr;
     }
 
-    //in parir temp<bool,bool> first = in, second = out
     bool setIsConnected(){
         map<int, pair<bool ,bool > > temp;
         auto* edges2 = new list<Edge<T> *>;
@@ -356,12 +344,6 @@ public:
         return isNotDirected;
     }
 
-    void setCorner(int _corner){numberOfVertexes=_corner;}
-
-    int getEdges(){ return numberOfEdges;}
-
-    void setEdges(int Edges1){numberOfEdges=Edges1;}
-
     bool setIsBipartite(){
         setNodesBlank();
         auto it = graphNodesMap->begin();
@@ -369,6 +351,21 @@ public:
 
         isBipartite = testBipartite((it->second),'R');
         return isBipartite;
+    }
+
+    ~Graph(){
+        deleteAllEdges();
+        delete graphNodesMap;
+    }
+
+    bool deleteEdge(int idFrom, int idTo){
+        typename std::list<Edge<T>*>::iterator nuevo;
+        if (this->findEdge(idFrom,idTo, nuevo)){
+            graphNodesMap->operator[](idFrom)->getEdges()->erase(nuevo);
+            numberOfEdges--;
+            return true;
+        }else
+            return false;
     }
 }
 
