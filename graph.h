@@ -110,7 +110,7 @@ public:
 
     map< int , Node<T>* >* getMap(){ return graphNodesMap;}
 
-    bool insertEgde(int idFrom, int idTo){
+    bool insertEdge(int idFrom, int idTo){
         if (graphNodesMap->operator[](idFrom) != nullptr and graphNodesMap->operator[](idTo) != nullptr){
             if(!findEdge(idFrom,idTo)){
                 auto* edge = new Edge<T>;
@@ -207,14 +207,7 @@ public:
     Graph<T>* Prim(int idOfSource){
         if (setIsNotDirected()) {
 
-            /* mientras que el numero de vertices actualmente en mi grafo sea menor que el numero de vertices
-             * guardar el edge que tenga el menor peso
-             * obtener el from y el to
-             * agregar edge al grafo
-             * sumar en uno la cantidad de vertices
-             * */
-
-            int numberOfVerticesAlreadyInThePrimGraph = 0;
+            int numberOfVerticesAlreadyInThePrimGraph = 1;
             auto* primGraph = new Graph();
             primGraph->insertNode(graphNodesMap[idOfSource]);
             map<int, Node<T>* >* primGraphMap = primGraph->getMap();
@@ -240,25 +233,22 @@ public:
                 if (findNodeTo == nullptr) {
                     // si es nullptr quiere decir que todavia no es parte de mi grafo
 
+                    // aumentar en uno el número de vértices
+                    ++numberOfVerticesAlreadyInThePrimGraph;
+
                     // obtener id para meterlo en el map de prim
                     int idFromMinEdgeWeightNodeTo = minEdgeWeightNodeTo->getID();
+
+                    // meterlo en el map de prim
                     primGraph[idFromMinEdgeWeightNodeTo] = minEdgeWeightNodeTo;
+
+                    // agregarlo al grafo
+                    int idFrom = minEdgeWeightNodeFrom->getID();
+                    int idTo = minEdgeWeightNodeTo->getID();
+                    primGraph->insertEdge(idFrom, idTo);
                 }
 
             }
-
-
-            auto currentNode = graphNodesMap[idOfSource];
-            auto currentEdges = currentNode.getEdges();
-
-
-
-            list<Edge<T>*>* sortedEdgesWeight = this->sortEdgesWeight();
-
-
-            map<int, Node<T>*>* primMap = primGraph->getMap();
-            primGraph->insertNode(currentNode);
-
             return primGraph;
         } else {
             cout << "Can't find MST of directed graph" << endl;
@@ -288,8 +278,8 @@ public:
                         kruskalMap->erase(nodeTo->getID());
                         kruskalMap->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
                     }
-                    kruskalgraph->insertEgde(nodeFrom->getID(),nodeTo->getID());
-                    kruskalgraph->insertEgde(nodeTo->getID(),nodeFrom->getID());
+                    kruskalgraph->insertEdge(nodeFrom->getID(),nodeTo->getID());
+                    kruskalgraph->insertEdge(nodeTo->getID(),nodeFrom->getID());
                 }
             }
             kruskalgraph->setVertexes(kruskalgraph->getMap()->size());
