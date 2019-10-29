@@ -261,6 +261,23 @@ public:
         }
     }
 
+
+    Graph<T>* prim(int idOfSource) {
+        if (this->setIsNotDirected()) {
+            auto* primGraph = new Graph();
+            primGraph->insertNode(graphNodesMap->operator[](idOfSource));
+
+            primGraph->printID(idOfSource);
+
+
+        }
+    }
+
+    void printID(int id) {
+        cout << "Node with ID: " << id << endl;
+        cout << this->graphNodesMap->operator[](id)->getID() << endl;
+    }
+
     Graph<T>* Kruskal(){
         if(setIsNotDirected()){
             list<Edge<T>*>* Edges = this->sortEdgesWeight();

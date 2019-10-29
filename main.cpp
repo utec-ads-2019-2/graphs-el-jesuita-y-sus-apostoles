@@ -29,6 +29,9 @@ int main() {
     if (directedGraph->setIsNotDirected())
         cout << "The graph is directed" << endl;
 
+
+    auto pr = notDirectedGraph->prim(4);
+
     delete bipartiteGraph;
     delete directedGraph;
     delete connectedGraph;
