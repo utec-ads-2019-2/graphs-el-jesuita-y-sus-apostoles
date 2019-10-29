@@ -7,41 +7,42 @@
 
 #include <iterator>
 #include <map>
-#include "Node.h"
-#include "Edge.h"
+#include "node.h"
+#include "edge.h"
 
 using namespace std;
 
 template <class T>
 class Graph{
-    map< int , Node<T>* > *Nodes;
-    int edges = 0;
-    int corner = 0;
-    double density=0;
-    bool isNotDirected=false;
-    bool isConex = false;
-    bool isBipar = false;
+    map< int , Node<T>* > *graphNodesMap;
+    int numberOfEdges = 0;
+    int numberOfVertexes = 0;
+    double density = 0;
+    bool isNotDirected = false;
+    bool isConnected = false;
+    bool isBipartite = false;
 
+    // esto borra todos los numberOfEdges de un solo nodo?
     void DeleteAllEdges(int idNode){
-        for (auto i = Nodes->begin(); i != Nodes->end() ; ++i) {
+        for (auto i = graphNodesMap->begin(); i != graphNodesMap->end() ; ++i) {
             deleteEdge(i->first, idNode);
         }
     }
 
-    void makeblank(){
-        for ( auto it = Nodes->begin(); it != Nodes->end(); it++) {
+    void setNodesBlank(){
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); it++) {
             (it->second)->setColor('B');
         }
     }
 
-    bool testBipartito(Node<T>* toTest, char color){
+    bool testBipartite(Node<T>* toTest, char color){
         int FinalValue= toTest->getEdges()->size();
         int thisValue=0;
         if (color == 'R'){
             for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue ; ++it, thisValue++) {
                 if((*it)->getTo()->getColor() == 'B' ){
                     (*it)->getTo()->setColor('A');
-                    return testBipartito((*it)->getTo(), 'A');
+                    return testBipartite((*it)->getTo(), 'A');
                 }else if((*it)->getTo()->getColor() == 'R')
                     return false;
                 else if((*it)->getTo()->getColor() == 'A'){
@@ -52,7 +53,7 @@ class Graph{
             for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue ; ++it, thisValue++) {
                 if((*it)->getTo()->getColor() == 'B' ){
                     (*it)->getTo()->setColor('R');
-                    return testBipartito((*it)->getTo(), 'R');
+                    return testBipartite((*it)->getTo(), 'R');
                 }else if((*it)->getTo()->getColor() == 'A')
                     return false;
                 else if((*it)->getTo()->getColor() == 'R'){
@@ -64,15 +65,16 @@ class Graph{
     }
 
     bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
-        if (Nodes->operator[](idFrom) == nullptr){
-            Nodes->erase(idFrom);
+        // por qué se borra?
+        if (graphNodesMap->operator[](idFrom) == nullptr){
+            graphNodesMap->erase(idFrom);
             return false;
-        }else if (Nodes->operator[](idTo) == nullptr) {
-            Nodes->erase(idTo);
+        }else if (graphNodesMap->operator[](idTo) == nullptr) {
+            graphNodesMap->erase(idTo);
             return false;
         }else{
-            auto* From = Nodes->operator[](idFrom);
-            auto* toCompare = Nodes->operator[](idTo);
+            auto* From = graphNodesMap->operator[](idFrom);
+            auto* toCompare = graphNodesMap->operator[](idTo);
             for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
                 Edge<Airport>* edge = *i;
                 if(edge->getTo() == toCompare ){
@@ -84,9 +86,9 @@ class Graph{
         }
     }
 
-    list<Edge<T>* >* GetOrderEdges(){
+    list<Edge<T>* >* sortEdgesWeight(){
         auto respt= new list<Edge<T>*>;
-        for (auto it_Nodes = Nodes->begin(); it_Nodes != Nodes->end() ; it_Nodes++) {
+        for (auto it_Nodes = graphNodesMap->begin(); it_Nodes != graphNodesMap->end() ; it_Nodes++) {
             Node<T>* actual = it_Nodes->second;
             for (auto it_edges = actual->getEdges()->begin(); it_edges != actual->getEdges()->end() ; it_edges++) {
                 if(respt->size() == 0){
@@ -106,36 +108,38 @@ class Graph{
     }
 
 public:
-    Graph(){Nodes = new map< int , Node<T>* >;}
+    Graph(){graphNodesMap = new map< int , Node<T>* >;}
 
-    map< int , Node<T>* >* getMap(){ return Nodes;}
+    map< int , Node<T>* >* getMap(){ return graphNodesMap;}
 
     bool insertEgde(int idFrom, int idTo){
-        if (Nodes->operator[](idFrom) != nullptr and Nodes->operator[](idTo) != nullptr){
+        // por qué se verifica si son diferentes de nullptr
+        if (graphNodesMap->operator[](idFrom) != nullptr and graphNodesMap->operator[](idTo) != nullptr){
             if(!findEdge(idFrom,idTo)){
                 auto* edge = new Edge<T>;
-                edge->setTo(Nodes->operator[](idTo));
-                edge->setFrom(Nodes->operator[](idFrom));
-                Nodes->operator[](idFrom)->getEdges()->push_front(edge);
-                edges++;
+                edge->setTo(graphNodesMap->operator[](idTo));
+                edge->setFrom(graphNodesMap->operator[](idFrom));
+                graphNodesMap->operator[](idFrom)->getEdges()->push_front(edge);
+                numberOfEdges++;
                 return true;
             }else return false;
 
         } else{
-            if (Nodes->operator[](idFrom) == nullptr){
-                Nodes->erase(idFrom);}
-            if (Nodes->operator[](idTo) == nullptr){
-                Nodes->erase(idTo);}
+            // por qué se ponen como nullptr
+            if (graphNodesMap->operator[](idFrom) == nullptr){
+                graphNodesMap->erase(idFrom);}
+            if (graphNodesMap->operator[](idTo) == nullptr){
+                graphNodesMap->erase(idTo);}
             return false;
         }
     }
 
     bool insertNode(Node<T>* node){
         int id = node->getID();
-        if (Nodes->operator[](id) == nullptr){
-            Nodes->erase(id);
-            Nodes->insert(pair<int, Node<T>*> (id,node));
-            corner++;
+        if (graphNodesMap->operator[](id) == nullptr){
+            graphNodesMap->erase(id);
+            graphNodesMap->insert(pair<int, Node<T>*> (id,node));
+            numberOfVertexes++;
             return true;
         }else{
             throw invalid_argument("Id in use");
@@ -143,40 +147,41 @@ public:
     }
 
     bool deleteEdge(int idFrom, int idTo){
+        // por qué se pone como typename
         typename std::list<Edge<T>*>::iterator nuevo;
         if (this->findEdge(idFrom,idTo, nuevo)){
-            Nodes->operator[](idFrom)->getEdges()->erase(nuevo);
-            edges--;
+            graphNodesMap->operator[](idFrom)->getEdges()->erase(nuevo);
+            numberOfEdges--;
             return true;
         }else
             return false;
     }
 
     bool deleteNode(int idNode){
-        if(Nodes->operator[](idNode) != nullptr){
-            Nodes->erase(idNode);
+        if(graphNodesMap->operator[](idNode) != nullptr){
+            graphNodesMap->erase(idNode);
             DeleteAllEdges(idNode);
             return true;
         }else {
-            Nodes->erase(idNode);
+            graphNodesMap->erase(idNode);
             return false;
         }
     }
 
     ~Graph(){
-        delete Nodes;
+        delete graphNodesMap;
     }
 
     bool findEdge(int idFrom, int idTo){
-        if (Nodes->operator[](idFrom) == nullptr){
-            Nodes->erase(idFrom);
+        if (graphNodesMap->operator[](idFrom) == nullptr){
+            graphNodesMap->erase(idFrom);
             return false;
-        }else if (Nodes->operator[](idTo) == nullptr) {
-            Nodes->erase(idTo);
+        }else if (graphNodesMap->operator[](idTo) == nullptr) {
+            graphNodesMap->erase(idTo);
             return false;
         }else{
-            auto* From = Nodes->operator[](idFrom);
-            auto* toCompare = Nodes->operator[](idTo);
+            auto* From = graphNodesMap->operator[](idFrom);
+            auto* toCompare = graphNodesMap->operator[](idTo);
             for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
                 Edge<Airport>* edge = *i;
                 if(edge->getTo() == toCompare )
@@ -187,29 +192,88 @@ public:
     }
 
     bool findNode(int id){
-        if(Nodes->operator[](id)== nullptr){
-            Nodes->erase(id);
+        if(graphNodesMap->operator[](id)== nullptr){
+            graphNodesMap->erase(id);
             return false;
         } else
             return false;
     }
 
     double getDensity(){
-        if(corner == 0 or corner == 1){
+        if(numberOfVertexes == 0 or numberOfVertexes == 1){
             return 0;
         }else {
-            density = edges/(corner*(corner-1));
+            density = numberOfEdges/(numberOfVertexes*(numberOfVertexes-1));
             return density;
+
         }
     }
 
-    Graph<T>* Prim(){
+    Graph<T>* Prim(int idOfSource){
+        if (setIsNotDirected()) {
 
+            /* mientras que el numero de vertices actualmente en mi grafo sea menor que el numero de vertices
+             * guardar el edge que tenga el menor peso
+             * obtener el from y el to
+             * agregar edge al grafo
+             * sumar en uno la cantidad de vertices
+             * */
+
+            int numberOfVerticesAlreadyInThePrimGraph = 0;
+            auto* primGraph = new Graph();
+            primGraph->insertNode(graphNodesMap[idOfSource]);
+            map<int, Node<T>* >* primGraphMap = primGraph->getMap();
+            primGraph[idOfSource] = graphNodesMap[idOfSource];
+
+            //mientras que el número de vértices conectados sea menor que el número de vértices
+            while (numberOfVertexes >= numberOfVerticesAlreadyInThePrimGraph) {
+                // guardar el edge que tenga el menor peso
+                list<Edge<T>*>* sortedEdgesWeightPrimGraph = primGraph->sortEdgesWeight();
+                Edge<T>* minEdgeWeight = sortedEdgesWeightPrimGraph->front();
+                sortedEdgesWeightPrimGraph->pop_front();
+
+                // obtener el from y el to
+
+                // from
+                auto minEdgeWeightNodeFrom = minEdgeWeight->getFrom();
+                // to
+                auto minEdgeWeightNodeTo = minEdgeWeight->getTo();
+
+                // iterador que busca si el nodo al que quiero ir ya ha sido visitado
+                auto findNodeTo = primGraphMap->find(minEdgeWeightNodeTo);
+
+                if (findNodeTo == nullptr) {
+                    // si es nullptr quiere decir que todavia no es parte de mi grafo
+
+                    // obtener id para meterlo en el map de prim
+                    int idFromMinEdgeWeightNodeTo = minEdgeWeightNodeTo->getID();
+                    primGraph[idFromMinEdgeWeightNodeTo] = minEdgeWeightNodeTo;
+                }
+
+            }
+
+
+            auto currentNode = graphNodesMap[idOfSource];
+            auto currentEdges = currentNode.getEdges();
+
+
+
+            list<Edge<T>*>* sortedEdgesWeight = this->sortEdgesWeight();
+
+
+            map<int, Node<T>*>* primMap = primGraph->getMap();
+            primGraph->insertNode(currentNode);
+
+            return primGraph;
+        } else {
+            cout << "Can't find MST of directed graph" << endl;
+            return nullptr;
+        }
     }
 
     Graph<T>* Krusca(){
         if(setIsNotDirected()){
-            list<Edge<T>*>* Edges = this->GetOrderEdges();
+            list<Edge<T>*>* Edges = this->sortEdgesWeight();
             Graph<T>* graph_Krusca = new Graph();
             map<int,Node<T>*>* mapKrusca = graph_Krusca->getMap();
             while(Edges->size()>0){
@@ -240,19 +304,19 @@ public:
     }
 
     //in parir temp<bool,bool> first = in, second = out
-    bool setIsConex(){
+    bool setIsConnected(){
         map<int, pair<bool ,bool > > temp;
-        list<Edge<T> *>* edges2 = new list<Edge<T> *>;
+        auto* edges2 = new list<Edge<T> *>;
 
-        for (auto it = Nodes->begin(); it != Nodes->end() ; ++it) {
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end() ; ++it) {
             temp.insert(pair<int,pair<bool,bool> >(it->first,pair<bool ,bool >(false,false)));
         }
-        for (auto it = Nodes->begin(); it != Nodes->end() ; ++it) {
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end() ; ++it) {
             Node<T> * ptr = it->second;
             temp.at(it->first).first = true;
             if(ptr->getEdges()->empty() or ptr->getEdges()->front()->getTo() == nullptr){
-                isConex = false;
-                return isConex;
+                isConnected = false;
+                return isConnected;
             }else {
                 *edges2 = *(ptr->getEdges());
                 for (int i = 0; i< edges2->size();i++) {
@@ -262,22 +326,22 @@ public:
                 }
             }
         }
-        for (auto it = temp.begin(); it != temp.end() ; it++) {
-            if(! it->second.first or !it->second.second){
-                isConex= false;
-                return isConex;
+        for (auto & it : temp) {
+            if(!it.second.first or !it.second.second){
+                isConnected = false;
+                return isConnected;
             }
         }
-        isConex = true;
-        return isConex;
+        isConnected = true;
+        return isConnected;
     }
 
     bool setIsNotDirected(){
-        if(edges%2 == 1){
+        if(numberOfEdges%2 == 1){
             isNotDirected= false;
             return isNotDirected;
-       }
-        for (auto it = Nodes->begin(); it != Nodes->end() ; it++) {
+        }
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end() ; it++) {
             list<Edge<T>*> edges2 = *(it->second->getEdges());
             for (int i = 0; i< edges2.size();i++) {
                 int id = edges2.front()->getTo()->getID();
@@ -292,19 +356,19 @@ public:
         return isNotDirected;
     }
 
-    void setCorner(int _corner){corner=_corner;}
+    void setCorner(int _corner){numberOfVertexes=_corner;}
 
-    int getEdges(){ return edges;}
+    int getEdges(){ return numberOfEdges;}
 
-    void setEdges(int Edges1){edges=Edges1;}
+    void setEdges(int Edges1){numberOfEdges=Edges1;}
 
-    bool setIsBipar(){
-        makeblank();
-        auto it = Nodes->begin();
+    bool setIsBipartite(){
+        setNodesBlank();
+        auto it = graphNodesMap->begin();
         (it->second)->setColor('R');
 
-        isBipar = testBipartito((it->second),'R');
-        return isBipar;
+        isBipartite = testBipartite((it->second),'R');
+        return isBipartite;
     }
 }
 
