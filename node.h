@@ -1,52 +1,52 @@
-//
-// Created by Usuario on 05/10/2019.
-//
-
 #ifndef GRAFO01_NODE_H
 #define GRAFO01_NODE_H
 
 #include <list>
-
+#include "edge.h"
 using namespace std;
 
-template <class U>
-class Edge;
 
 template <class T>
 class Node {
     T* Object;
-    list< Edge<T>* >* edge;
-    Node<T>* selfPtr;
-    int Id;
+    list< Edge<T>* >* listOfEdges;
+    int Id{};
+
     char color;
 public:
-    Node(T* object){
+    explicit Node(T* object){
         Object = object;
-        selfPtr = this;
-        edge = new list<Edge<T>*>;
+        listOfEdges = new list<Edge<T>*>;
         color = 'B';}
 
-    void setID(int id){Id = id;}
+    void setID(int id){
+        Id = id;
+    }
 
-    int getID(){ return Id;}
+    int getID(){
+        return Id;
+    }
 
-    char getColor(){ return color;}
+    list< Edge<T>* >* getEdges(){
+        return listOfEdges;
+    }
 
-    list< Edge<T>* >* getEdges(){ return edge;}
+    T* getObject(){
+        return Object;
+    }
 
-    T* getObject(){ return Object;}
+    void setColor(char c) {
+        this->color = c;
+    }
+
+    char getColor() const {
+        return color;
+    }
 
     ~Node(){
-        delete edge;
-        selfPtr = nullptr;
+        delete listOfEdges;
         Object = nullptr;
     }
-
-    void setColor(char color) {
-        Node::color = color;
-    }
-
-    void grafic();
 };
 
 
