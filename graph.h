@@ -1,7 +1,3 @@
-//
-// Created by Usuario on 05/10/2019.
-//
-
 #ifndef GRAFO01_GRAPH_H
 #define GRAFO01_GRAPH_H
 

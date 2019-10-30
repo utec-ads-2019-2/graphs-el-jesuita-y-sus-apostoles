@@ -176,7 +176,7 @@ void floydWarshall() {
             i == j ? nodeOrderMatrix[i][j] == INT_MAX : nodeOrderMatrix[i][j] = j + 1;
         }
     }
-    
+
     double distanceMatrixIterations[numberOfVertexes][numberOfVertexes], nodeOrderMatrixIteration[numberOfVertexes][numberOfVertexes];
 
     for (int i = 0; i < numberOfVertexes; i++) {
