@@ -488,6 +488,15 @@ public:
         return vectorBFS;
     }
 
+    vector<int> DFS(int idOfSourceNode) {
+        map<int, bool> visitedNodes;
+        vector<int> vectorDFS;
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
+            visitedNodes[it->first] = false;
+        privateDFS(idOfSourceNode, visitedNodes, vectorDFS);
+        return vectorDFS;
+    }
+
 
 };
 #endif //GRAFO01_GRAPH_H
