@@ -451,6 +451,10 @@ public:
     }
     vector<Node<T>*> dijsktra(int idFrom){
         map<int, int>* Distancias= new map<int,int>;
+        initializeMapDistances(idFrom, Distancias);
+    }
+
+    void initializeMapDistances(int idFrom, map<int, int> *Distancias) const {
         for (auto iterador = graphNodesMap->begin(); iterador != graphNodesMap->end() ; ++iterador) {
             if(iterador->first != idFrom){
                 int INFINITE = -1;
@@ -458,6 +462,7 @@ public:
             }else
                 Distancias->insert(pair<int,int>(iterador->first,0));
         }
+    }
 
     vector<int> DFS(int idOfSourceNode) {
         map<int, bool> visitedNodes;

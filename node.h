@@ -12,19 +12,16 @@ template <class T>
 class Node {
     T* Object;
     list< Edge<T>* >* listOfEdges;
-    Node<T>* selfPtr;
     int Id;
     char color;
 public:
     explicit Node(T* object){
         Object = object;
-        selfPtr = this;
         listOfEdges = new list<Edge<T>*>;
         color = 'B';}
   
     Node(){
         Object = nullptr;
-        selfPtr = nullptr;
         listOfEdges = nullptr;
         color = 'B';}
 
@@ -38,20 +35,15 @@ public:
 
     T* getObject(){ return Object;}
 
-    ~Node(){
-        delete listOfEdges;
-        delete selfPtr;
-        delete Object;
-        selfPtr = nullptr;
-        Object = nullptr;
-        listOfEdges = nullptr;
-    }
-
     void setColor(char c) {
         Node::color = c;
     }
 
+    ~Node(){
+        delete listOfEdges;
+        delete Object;
+        Object = nullptr;
+        listOfEdges = nullptr;
+    }
 };
-
-
 #endif //GRAFO01_NODE_H
