@@ -451,6 +451,10 @@ public:
     }
     vector<Node<T>*> dijsktra(int idFrom){
         map<int, int>* Distancias= new map<int,int>;
+        initializeMapDistances(idFrom, Distancias);
+    }
+
+    void initializeMapDistances(int idFrom, map<int, int> *Distancias) const {
         for (auto iterador = graphNodesMap->begin(); iterador != graphNodesMap->end() ; ++iterador) {
             if(iterador->first != idFrom){
                 int INFINITE = -1;
