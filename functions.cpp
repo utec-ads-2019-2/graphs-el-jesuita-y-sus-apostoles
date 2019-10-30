@@ -155,9 +155,9 @@ void floydWarshall() {
 
     for (int i = 0; i < numberOfVertexes; ++i) {
         for (int j = i; j < numberOfVertexes; ++j) {
-            if (i == j) {
+            if (i == j)
                 distanceMatrix[i][j] = INT_MAX;
-            } else {
+            else {
                 cout << "Enter the weight of the incident edge to " << i + 1 << " and " << j + 1 << ": ";
                 cin >> distanceMatrix[i][j];
                 distanceMatrix[j][i] = distanceMatrix[i][j];
@@ -165,27 +165,20 @@ void floydWarshall() {
         }
     }
 
-    for (int i = 0; i < numberOfVertexes; ++i) {
-        for (int j = 0; j < numberOfVertexes; ++j) {
-            if (i == j) {
-                nodeOrderMatrix[i][j] = INT_MAX;
-            } else {
-                nodeOrderMatrix[i][j] = j + 1;
-            }
+    for (int i = 0; i < numberOfVertexes; ++i)
+        for (int j = 0; j < numberOfVertexes; ++j)
             i == j ? nodeOrderMatrix[i][j] == INT_MAX : nodeOrderMatrix[i][j] = j + 1;
-        }
-    }
 
-    double distanceMatrixIterations[numberOfVertexes][numberOfVertexes], nodeOrderMatrixIteration[numberOfVertexes][numberOfVertexes];
+    double distanceMatrixIterations[numberOfVertexes][numberOfVertexes], nodeOrderMatrixIterations[numberOfVertexes][numberOfVertexes];
 
     for (int i = 0; i < numberOfVertexes; i++) {
         for (int j = 0; j < numberOfVertexes; j++) {
             if (i == j) {
                 distanceMatrixIterations[i][j] = INT_MAX;
-                nodeOrderMatrixIteration[i][j] = INT_MAX;
+                nodeOrderMatrixIterations[i][j] = INT_MAX;
             } else {
                 distanceMatrixIterations[i][j] = 0;
-                nodeOrderMatrixIteration[i][j] = 0;
+                nodeOrderMatrixIterations[i][j] = 0;
             }
         }
     }
@@ -194,29 +187,29 @@ void floydWarshall() {
         for (int i = 0; i < numberOfVertexes; ++i) {
             distanceMatrixIterations[iterationNumber][i] = distanceMatrix[iterationNumber][i];
             distanceMatrixIterations[i][iterationNumber] = distanceMatrix[i][iterationNumber];
-            nodeOrderMatrixIteration[iterationNumber][i] = nodeOrderMatrix[iterationNumber][i];
-            nodeOrderMatrixIteration[i][iterationNumber] = nodeOrderMatrix[i][iterationNumber];
+            nodeOrderMatrixIterations[iterationNumber][i] = nodeOrderMatrix[iterationNumber][i];
+            nodeOrderMatrixIterations[i][iterationNumber] = nodeOrderMatrix[i][iterationNumber];
         }
 
-        for(int i = 0; i < numberOfVertexes; i++) {
-            if(i == iterationNumber) continue;
-            for(int j = 0; j < numberOfVertexes; j++) {
-                if(j == iterationNumber) continue;
-                if(i == j) continue;
+        for (int i = 0; i < numberOfVertexes; ++i) {
+            if (i == iterationNumber) continue;
+            for (int j = 0; j < numberOfVertexes; ++j) {
+                if (j == iterationNumber) continue;
+                if (i == j) continue;
                 if(distanceMatrix[i][j] > distanceMatrix[i][iterationNumber] + distanceMatrix[iterationNumber][j]) {
                     distanceMatrixIterations[i][j] = distanceMatrix[i][iterationNumber] + distanceMatrix[iterationNumber][j];
-                    nodeOrderMatrixIteration[i][j] = iterationNumber + 1;  //kth iteration, as indexing starts from 0 so, we add 1
+                    nodeOrderMatrixIterations[i][j] = iterationNumber + 1;
                 } else {
                     distanceMatrixIterations[i][j] = distanceMatrix[i][j];
-                    nodeOrderMatrixIteration[i][j] = nodeOrderMatrixIteration[i][j];
+                    nodeOrderMatrixIterations[i][j] = nodeOrderMatrixIterations[i][j];
                 }
             }
         }
 
-        for(int i = 0; i < numberOfVertexes; i++) {
-            for(int j = 0; j < numberOfVertexes; j++) {
+        for(int i = 0; i < numberOfVertexes; ++i) {
+            for(int j = 0; j < numberOfVertexes; ++j) {
                 distanceMatrix[i][j] = distanceMatrixIterations[i][j];
-                nodeOrderMatrix[i][j] = nodeOrderMatrixIteration[i][j];
+                nodeOrderMatrix[i][j] = nodeOrderMatrixIterations[i][j];
             }
         }
     }

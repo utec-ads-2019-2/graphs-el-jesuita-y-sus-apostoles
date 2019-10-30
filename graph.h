@@ -110,7 +110,6 @@ class Graph{
 
     void privateDFS(int idOfNode, map<int, bool> &visitedNodes, vector<int> &vectorDFS) {
         visitedNodes[idOfNode] = true;
-        //cout << idOfNode << " ";
         vectorDFS.push_back(idOfNode);
 
         auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
@@ -221,59 +220,6 @@ public:
 
         }
     }
-
-    Graph<T>* Prim(int idOfSource){
-        if (setIsNotDirected()) {
-
-            int numberOfVerticesAlreadyInThePrimGraph = 1;
-            auto* primGraph = new Graph();
-            primGraph->insertNode(graphNodesMap->operator[](idOfSource));
-            map<int, Node<T>* >* primGraphMap = primGraph->getMap();
-            primGraph[idOfSource] = graphNodesMap[idOfSource];
-
-            //mientras que el número de vértices conectados sea menor que el número de vértices
-            while (numberOfVertexes > numberOfVerticesAlreadyInThePrimGraph) {
-                // guardar el edge que tenga el menor peso
-                list<Edge<T>*>* sortedEdgesWeightPrimGraph = primGraph->sortEdgesWeight();
-                Edge<T>* minEdgeWeight = sortedEdgesWeightPrimGraph->front();
-                sortedEdgesWeightPrimGraph->pop_front();
-
-                // obtener el from y el to
-
-                // from
-                auto minEdgeWeightNodeFrom = minEdgeWeight->getFrom();
-                // to
-                auto minEdgeWeightNodeTo = minEdgeWeight->getTo();
-
-                // iterador que busca si el nodo al que quiero ir ya ha sido visitado
-                auto findNodeTo = primGraphMap->find(minEdgeWeightNodeTo);
-
-                if (findNodeTo == nullptr) {
-                    // si es nullptr quiere decir que todavia no es parte de mi grafo
-
-                    // aumentar en uno el número de vértices
-                    ++numberOfVerticesAlreadyInThePrimGraph;
-
-                    // obtener id para meterlo en el map de prim
-                    int idFromMinEdgeWeightNodeTo = minEdgeWeightNodeTo->getID();
-
-                    // meterlo en el map de prim
-                    primGraph[idFromMinEdgeWeightNodeTo] = minEdgeWeightNodeTo;
-
-                    // agregarlo al grafo
-                    int idFrom = minEdgeWeightNodeFrom->getID();
-                    int idTo = minEdgeWeightNodeTo->getID();
-                    primGraph->insertEdge(idFrom, idTo);
-                }
-
-            }
-            return primGraph;
-        } else {
-            cout << "Can't find MST of directed graph" << endl;
-            return nullptr;
-        }
-    }
-
 
     Graph<T>* prim(int idOfSource) {
         if (this->setIsNotDirected()) {
@@ -496,5 +442,17 @@ public:
         }
         return vectorBFS;
     }
+
+
+    vector<int> DFS(int idOfSourceNode) {
+        map<int, bool> visitedNodes;
+        vector<int> vectorDFS;
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
+            visitedNodes[it->first] = false;
+        privateDFS(idOfSourceNode, visitedNodes, vectorDFS);
+        return vectorDFS;
+    }
+
+
 };
 #endif //GRAFO01_GRAPH_H
