@@ -26,27 +26,26 @@ int main() {
     if(notDirectedGraph->setIsNotDirected())
         cout << "The graph is not directed" << endl;
 
-    if (directedGraph->setIsNotDirected())
+    if (!directedGraph->setIsNotDirected())
         cout << "The graph is directed" << endl;
 
-    /*auto krusca = notDirectedGraph->Kruskal();
+    auto prim = notDirectedGraph->prim(1);
+    auto krusca = notDirectedGraph->Kruskal();
+
+    if(prim->setIsNotDirected())
+        cout << "The graph is not directed" << endl;
+
+    if(krusca->setIsNotDirected())
+        cout << "The graph is not directed" << endl;
+
     string filename;
     cin>>filename;
     filename = filename+".json";
-    parseToJsonTxt(krusca,filename);*/
-
-    //auto pr = notDirectedGraph->prim(1);
-    //floydWarshall();
-
-    auto ve1 = notDirectedGraph->DFS(4);
-    cout << endl;
-    auto ve = notDirectedGraph->BFS(4);
-    for (int & it : ve1)
-        cout << it << " ";
-    cout << endl;
-    for (int & it : ve)
-        cout << it << " ";
-
+    parseToJsonTxt(krusca,filename);
+    cin>>filename;
+    filename = filename+".json";
+    parseToJsonTxt(prim,filename);
+  
     delete bipartiteGraph;
     delete directedGraph;
     delete connectedGraph;

@@ -209,7 +209,7 @@ public:
             graphNodesMap->erase(id);
             return false;
         } else
-            return false;
+            return true;
     }
 
     double getDensity(){
@@ -278,29 +278,51 @@ public:
     Graph<T>* prim(int idOfSource) {
         if (this->setIsNotDirected()) {
             auto* primGraph = new Graph();
-            primGraph->insertNode(graphNodesMap->operator[](idOfSource));
-            auto primGraphSortedEdgesWeight = primGraph->sortEdgesWeight();
-            for (auto it = primGraphSortedEdgesWeight->begin(); it != primGraphSortedEdgesWeight->end(); ++it) {
-                cout << *(it)->getTo()->getId() << " ";
-            }
+                Node<T>* FirstNode = new Node<T>(graphNodesMap->at(idOfSource)->getObject());
+                FirstNode->getEdges()->clear();
+                vector<list<Edge<T>*>> vectorOfListEdges;
+                list<Edge<T>*> edgesInsert = *(graphNodesMap->operator[](idOfSource)->getEdges());
+                vectorOfListEdges.push_back(edgesInsert);
+                Edge<T> minEdge;
+                while (!vectorOfListEdges.empty() and primGraph->getEdges()<2*graphNodesMap->size() and primGraph->getMap()->size()!=graphNodesMap->size()){
+                    minEdge = getMinEdgeFromVector(vectorOfListEdges);
+                    if(!(primGraph->findNode(minEdge.getTo()->getID()))){
+                        Node<T>* nodeToInsert = new Node<T>(minEdge.getTo()->getObject());
+                        nodeToInsert->setID(nodeToInsert->getObject()->getId());
+                        primGraph->insertNode(nodeToInsert);
+                        primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID());
+                        primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID());
+                        list<Edge<T>*> listToInsert = *(minEdge.getTo()->getEdges());
+                        vectorOfListEdges.push_back(*(minEdge.getTo()->getEdges()));
+                    }
+                }
+            return primGraph;
+        }else{
+            throw invalid_argument("Graph is directed");
         }
     }
 
-    Graph<T>* prim2(int idOfSource) {
-        if (this->setIsNotDirected()) {
-            auto* primGraph = new Graph();
-            Node<T>* node = new Node<T>;
-            *node = *graphNodesMap->operator[](idOfSource);
-            node->getEdges()->clear();
-            primGraph->insertNode(node);
-            list<Edge<T>* >* listOfEdges = graphNodesMap->operator[](idOfSource)->getEdges();
-            Edge<T>* min = listOfEdges->be;
-            for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
-                if((*it)->getWeight() < min) {
-                    min = (*it)->getWeight();
+    Edge<T> getMinEdgeFromVector(vector<list<Edge<T>*>> &vectorOfListEdges){
+        auto VectorIterador = (vectorOfListEdges.begin());
+        auto minIterador = (*VectorIterador).begin();
+        int listPositionAtVector =0;
+        Edge<T> minEdge = *(*minIterador);
+        int vectorPos = 0;
+        for (; VectorIterador != vectorOfListEdges.end(); VectorIterador++) {
+            for (auto listIterador = (*VectorIterador).begin(); listIterador !=(*VectorIterador).end(); listIterador++) {
+                if(minEdge.getWeight()>(*listIterador)->getWeight()){
+                    listPositionAtVector  =vectorPos;
+                    minIterador=listIterador;
+                    minEdge = *(*listIterador);
                 }
             }
+            vectorPos++;
         }
+        vectorOfListEdges.at(listPositionAtVector).erase(minIterador);
+        if(vectorOfListEdges.at(listPositionAtVector).empty()){
+                vectorOfListEdges.erase(vectorOfListEdges.begin()+(listPositionAtVector));
+        }
+        return minEdge;
     }
 
     void printID(int id) {
@@ -319,7 +341,7 @@ public:
     }
 
     Graph<T>* Kruskal(){
-        if(setIsNotDirected()){
+        if(this->setIsNotDirected()){
             list<Edge<T>*>* Edges = this->sortEdgesWeight();
             Graph<T>* kruskalgraph = new Graph();
             map<int,Node<T>*>* kruskalMap = kruskalgraph->getMap();
@@ -427,6 +449,15 @@ public:
         }else
             return false;
     }
+    vector<Node<T>*> dijsktra(int idFrom){
+        map<int, int>* Distancias= new map<int,int>;
+        for (auto iterador = graphNodesMap->begin(); iterador != graphNodesMap->end() ; ++iterador) {
+            if(iterador->first != idFrom){
+                int INFINITE = -1;
+                Distancias->insert(pair<int,int>(iterador->first,INFINITE));
+            }else
+                Distancias->insert(pair<int,int>(iterador->first,0));
+        }
 
     vector<int> DFS(int idOfSourceNode) {
         map<int, bool> visitedNodes;
