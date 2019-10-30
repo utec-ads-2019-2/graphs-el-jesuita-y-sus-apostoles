@@ -7,10 +7,10 @@ using namespace std;
 using json = nlohmann::json;
 
 int main() {
-    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("jsonFiles/bipartito.json");
-    Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("jsonFiles/notDirected.json");
-    Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("jsonFiles/directed.json");
-    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("jsonFiles/conexo.json");
+    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("../jsonFiles/bipartito.json");
+    Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/notDirected.json");
+    Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("../jsonFiles/directed.json");
+    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
 
     if (notDirectedGraph->findEdge(1,2))
         cout << "Edge found" << endl;
@@ -29,11 +29,23 @@ int main() {
     if (directedGraph->setIsNotDirected())
         cout << "The graph is directed" << endl;
 
-    auto krusca = notDirectedGraph->Kruskal();
+    /*auto krusca = notDirectedGraph->Kruskal();
     string filename;
     cin>>filename;
     filename = filename+".json";
-    parseToJsonTxt(krusca,filename);
+    parseToJsonTxt(krusca,filename);*/
+
+    //auto pr = notDirectedGraph->prim(1);
+    //floydWarshall();
+
+    auto ve1 = notDirectedGraph->DFS(4);
+    cout << endl;
+    auto ve = notDirectedGraph->BFS(4);
+    for (int & it : ve1)
+        cout << it << " ";
+    cout << endl;
+    for (int & it : ve)
+        cout << it << " ";
 
     delete bipartiteGraph;
     delete directedGraph;

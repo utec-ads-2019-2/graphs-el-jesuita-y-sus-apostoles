@@ -112,10 +112,27 @@ class Graph{
         return respt;
     }
 
+    void privateDFS(int idOfNode, map<int, bool> &visitedNodes, vector<int> &vectorDFS) {
+        visitedNodes[idOfNode] = true;
+        //cout << idOfNode << " ";
+        vectorDFS.push_back(idOfNode);
+
+        auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
+        for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
+            if (!visitedNodes[(*it)->getTo()->getID()]) {
+                privateDFS((*it)->getTo()->getID(), visitedNodes, vectorDFS);
+            }
+        }
+    }
+
 public:
     Graph(){graphNodesMap = new map< int , Node<T>* >;}
 
     map< int , Node<T>* >* getMap(){ return graphNodesMap;}
+
+    list<Edge<T>* >* getSortEdgesWeight() {
+        return this->sortEdgesWeight();
+    }
 
     int getEdges() {
         return numberOfEdges;
@@ -214,7 +231,7 @@ public:
 
             int numberOfVerticesAlreadyInThePrimGraph = 1;
             auto* primGraph = new Graph();
-            primGraph->insertNode(graphNodesMap[idOfSource]);
+            primGraph->insertNode(graphNodesMap->operator[](idOfSource));
             map<int, Node<T>* >* primGraphMap = primGraph->getMap();
             primGraph[idOfSource] = graphNodesMap[idOfSource];
 
@@ -266,10 +283,27 @@ public:
         if (this->setIsNotDirected()) {
             auto* primGraph = new Graph();
             primGraph->insertNode(graphNodesMap->operator[](idOfSource));
+            auto primGraphSortedEdgesWeight = primGraph->sortEdgesWeight();
+            for (auto it = primGraphSortedEdgesWeight->begin(); it != primGraphSortedEdgesWeight->end(); ++it) {
+                cout << *(it)->getTo()->getId() << " ";
+            }
+        }
+    }
 
-            primGraph->printID(idOfSource);
-
-
+    Graph<T>* prim2(int idOfSource) {
+        if (this->setIsNotDirected()) {
+            auto* primGraph = new Graph();
+            Node<T>* node = new Node<T>;
+            *node = *graphNodesMap->operator[](idOfSource);
+            node->getEdges()->clear();
+            primGraph->insertNode(node);
+            list<Edge<T>* >* listOfEdges = graphNodesMap->operator[](idOfSource)->getEdges();
+            Edge<T>* min = listOfEdges->be;
+            for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
+                if((*it)->getWeight() < min) {
+                    min = (*it)->getWeight();
+                }
+            }
         }
     }
 
@@ -278,12 +312,22 @@ public:
         cout << this->graphNodesMap->operator[](id)->getID() << endl;
     }
 
+    void printEdges(int id) {
+        cout << "Edges of node with ID: " << id << endl;
+        auto edges = this->graphNodesMap->operator[](id)->getEdges();
+        for (auto it = edges->begin(); it != edges->end(); ++it) {
+            auto to = (*it)->getTo()->getId();
+            cout << to << " ";
+        }
+        cout << endl;
+    }
+
     Graph<T>* Kruskal(){
         if(setIsNotDirected()){
             list<Edge<T>*>* Edges = this->sortEdgesWeight();
             Graph<T>* kruskalgraph = new Graph();
             map<int,Node<T>*>* kruskalMap = kruskalgraph->getMap();
-            while(Edges->size()>0){
+            while(Edges->size() > 0){
                 Node<T>* nodeTo = new Node<T>(Edges->back()->getTo()->getObject());
                 nodeTo->setID(nodeTo->getObject()->getId());
                 Node<T>* nodeFrom = new Node<T>(Edges->back()->getFrom()->getObject());
@@ -387,7 +431,38 @@ public:
         }else
             return false;
     }
-}
 
-;
+    vector<int> DFS(int idOfSourceNode) {
+        map<int, bool> visitedNodes;
+        vector<int> vectorDFS;
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
+            visitedNodes[it->first] = false;
+        privateDFS(idOfSourceNode, visitedNodes, vectorDFS);
+        return vectorDFS;
+    }
+
+    vector<int> BFS(int idOfSource) {
+        map<int, bool> visitedNodes;
+        for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
+            visitedNodes[it->first] = false;
+
+        visitedNodes[idOfSource] = true;
+        list<int> keepTrackOfNodes;
+        keepTrackOfNodes.push_back(idOfSource);
+        vector<int> vectorBFS;
+        while(!keepTrackOfNodes.empty()) {
+            int idOfNode = keepTrackOfNodes.front();
+            vectorBFS.push_back(idOfNode);
+            keepTrackOfNodes.pop_front();
+            auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
+            for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
+                if (!visitedNodes[(*it)->getTo()->getID()]) {
+                    visitedNodes[(*it)->getTo()->getID()] = true;
+                    keepTrackOfNodes.push_back((*it)->getTo()->getID());
+                }
+            }
+        }
+        return vectorBFS;
+    }
+};
 #endif //GRAFO01_GRAPH_H

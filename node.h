@@ -20,7 +20,8 @@ public:
         Object = object;
         selfPtr = this;
         listOfEdges = new list<Edge<T>*>;
-        color = 'B';}
+        color = 'B';
+    }
 
     void setID(int id){Id = id;}
 
