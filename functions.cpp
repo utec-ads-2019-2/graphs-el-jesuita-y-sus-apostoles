@@ -115,16 +115,15 @@ void parseToJsonTxt(Graph<Airport>* graph,  const string& fileout){
 }
 
 Graph<Airport>* buildGraph(json file){
-    auto* graph = new Graph<Airport>();
-    json json1 = std::move(file);
+    auto* graph = new Graph<Airport>(); json allJsonAirports = std::move(file);
     map< int, Node<Airport>* >* maps = graph->getMap();
-    for (const auto& json2 : json1) {
-        auto* airport = new Airport(json2);
+    for (const auto& jsonAirport : allJsonAirports) {
+        auto* airport = new Airport(jsonAirport);
         auto* node = new Node<Airport>(airport);
         node->setID(node->getObject()->getId());
         (maps)->insert(pairOfIntsAndNodes(node->getID(),node));
     }
-    int vertexes = json1.size();
+    int vertexes = allJsonAirports.size();
     graph->setVertexes(vertexes);
     for (auto j = maps->begin(); j != maps->end(); j++) {
         if (j->second != nullptr)

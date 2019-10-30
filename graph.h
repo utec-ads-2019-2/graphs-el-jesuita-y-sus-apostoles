@@ -460,13 +460,28 @@ public:
         }
     }
 
-    vector<int> DFS(int idOfSourceNode) {
+    vector<int> BFS(int idOfSource) {
         map<int, bool> visitedNodes;
-        vector<int> vectorDFS;
         for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
             visitedNodes[it->first] = false;
-        privateDFS(idOfSourceNode, visitedNodes, vectorDFS);
-        return vectorDFS;
+
+        visitedNodes[idOfSource] = true;
+        list<int> keepTrackOfNodes;
+        keepTrackOfNodes.push_back(idOfSource);
+        vector<int> vectorBFS;
+        while(!keepTrackOfNodes.empty()) {
+            int idOfNode = keepTrackOfNodes.front();
+            vectorBFS.push_back(idOfNode);
+            keepTrackOfNodes.pop_front();
+            auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
+            for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
+                if (!visitedNodes[(*it)->getTo()->getID()]) {
+                    visitedNodes[(*it)->getTo()->getID()] = true;
+                    keepTrackOfNodes.push_back((*it)->getTo()->getID());
+                }
+            }
+        }
+        return vectorBFS;
     }
 
 
