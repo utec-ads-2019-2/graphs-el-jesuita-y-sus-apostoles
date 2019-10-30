@@ -64,7 +64,8 @@ double calculateWeight(double x1, double x2, double y1, double y2){
                              pow(sin(distanceBetweenLongitudes / 2), 2) * cos(x1) * cos(x2)));
 }
 
-void buildEdgeFromGraph(map<int,Node<Airport>*>* Nodes, Node<Airport>* node, Graph<Airport>* graph){
+void buildEdgeFromGraph(Node<Airport>* node, Graph<Airport>* graph){
+    auto Nodes = graph->getMap();
     if(node != nullptr) {
         vector<int>* destination = (node->getObject())->getDestinations();
         for (int & i : *destination) {
@@ -127,7 +128,7 @@ Graph<Airport>* buildGraph(json file){
     graph->setVertexes(vertexes);
     for (auto j = maps->begin(); j != maps->end(); j++) {
         if (j->second != nullptr)
-            buildEdgeFromGraph(maps, j->second, graph);
+            buildEdgeFromGraph(j->second, graph);
         else
             cout<<j->first<<" "<<endl;
     }
@@ -135,14 +136,12 @@ Graph<Airport>* buildGraph(json file){
 }
 
 Graph<Airport>* readJsonAndReturnAirportGraph(const string& nameOfJSON) {
-    ifstream ifs(nameOfJSON);
-    if (ifs.fail()) {
+    ifstream inputFile(nameOfJSON);
+    if (inputFile.fail()) {
         throw invalid_argument("File not found");
     }
-
-    json ifsJSON = json::parse(ifs);
-
-    Graph<Airport>* graph = buildGraph(ifsJSON);
+    json inputJson = json::parse(inputFile);
+    Graph<Airport>* graph = buildGraph(inputJson);
     return graph;
 }
 
