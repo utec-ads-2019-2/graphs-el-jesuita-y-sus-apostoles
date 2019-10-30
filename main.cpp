@@ -7,10 +7,10 @@ using namespace std;
 using json = nlohmann::json;
 
 int main() {
-    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("jsonFiles/bipartito.json");
-    Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("jsonFiles/notDirected.json");
-    Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("jsonFiles/directed.json");
-    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("jsonFiles/conexo.json");
+    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("../jsonFiles/bipartito.json");
+    Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/notDirected.json");
+    Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("../jsonFiles/directed.json");
+    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
 
     if (notDirectedGraph->findEdge(1,2))
         cout << "Edge found" << endl;
@@ -45,6 +45,7 @@ int main() {
     cin>>filename;
     filename = filename+".json";
     parseToJsonTxt(prim,filename);
+  
     delete bipartiteGraph;
     delete directedGraph;
     delete connectedGraph;

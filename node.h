@@ -21,6 +21,7 @@ public:
         selfPtr = this;
         listOfEdges = new list<Edge<T>*>;
         color = 'B';}
+  
     Node(){
         Object = nullptr;
         selfPtr = nullptr;

@@ -146,3 +146,98 @@ Graph<Airport>* readJsonAndReturnAirportGraph(const string& nameOfJSON) {
     Graph<Airport>* graph = buildGraph(ifsJSON);
     return graph;
 }
+
+void floydWarshall() {
+    int numberOfVertexes;
+    cout << "Enter the number of vertexes: ";
+    cin >> numberOfVertexes;
+
+    double distanceMatrix[numberOfVertexes][numberOfVertexes], nodeOrderMatrix[numberOfVertexes][numberOfVertexes];
+
+    for (int i = 0; i < numberOfVertexes; ++i) {
+        for (int j = i; j < numberOfVertexes; ++j) {
+            if (i == j) {
+                distanceMatrix[i][j] = INT_MAX;
+            } else {
+                cout << "Enter the weight of the incident edge to " << i + 1 << " and " << j + 1 << ": ";
+                cin >> distanceMatrix[i][j];
+                distanceMatrix[j][i] = distanceMatrix[i][j];
+            }
+        }
+    }
+
+    for (int i = 0; i < numberOfVertexes; ++i) {
+        for (int j = 0; j < numberOfVertexes; ++j) {
+            if (i == j) {
+                nodeOrderMatrix[i][j] = INT_MAX;
+            } else {
+                nodeOrderMatrix[i][j] = j + 1;
+            }
+            i == j ? nodeOrderMatrix[i][j] == INT_MAX : nodeOrderMatrix[i][j] = j + 1;
+        }
+    }
+
+    double distanceMatrixIterations[numberOfVertexes][numberOfVertexes], nodeOrderMatrixIteration[numberOfVertexes][numberOfVertexes];
+
+    for (int i = 0; i < numberOfVertexes; i++) {
+        for (int j = 0; j < numberOfVertexes; j++) {
+            if (i == j) {
+                distanceMatrixIterations[i][j] = INT_MAX;
+                nodeOrderMatrixIteration[i][j] = INT_MAX;
+            } else {
+                distanceMatrixIterations[i][j] = 0;
+                nodeOrderMatrixIteration[i][j] = 0;
+            }
+        }
+    }
+
+    for (int iterationNumber = 0; iterationNumber < numberOfVertexes; ++iterationNumber) {
+        for (int i = 0; i < numberOfVertexes; ++i) {
+            distanceMatrixIterations[iterationNumber][i] = distanceMatrix[iterationNumber][i];
+            distanceMatrixIterations[i][iterationNumber] = distanceMatrix[i][iterationNumber];
+            nodeOrderMatrixIteration[iterationNumber][i] = nodeOrderMatrix[iterationNumber][i];
+            nodeOrderMatrixIteration[i][iterationNumber] = nodeOrderMatrix[i][iterationNumber];
+        }
+
+        for(int i = 0; i < numberOfVertexes; i++) {
+            if(i == iterationNumber) continue;
+            for(int j = 0; j < numberOfVertexes; j++) {
+                if(j == iterationNumber) continue;
+                if(i == j) continue;
+                if(distanceMatrix[i][j] > distanceMatrix[i][iterationNumber] + distanceMatrix[iterationNumber][j]) {
+                    distanceMatrixIterations[i][j] = distanceMatrix[i][iterationNumber] + distanceMatrix[iterationNumber][j];
+                    nodeOrderMatrixIteration[i][j] = iterationNumber + 1;  //kth iteration, as indexing starts from 0 so, we add 1
+                } else {
+                    distanceMatrixIterations[i][j] = distanceMatrix[i][j];
+                    nodeOrderMatrixIteration[i][j] = nodeOrderMatrixIteration[i][j];
+                }
+            }
+        }
+
+        for(int i = 0; i < numberOfVertexes; i++) {
+            for(int j = 0; j < numberOfVertexes; j++) {
+                distanceMatrix[i][j] = distanceMatrixIterations[i][j];
+                nodeOrderMatrix[i][j] = nodeOrderMatrixIteration[i][j];
+            }
+        }
+    }
+
+    cout << "Distance Matrix: " << endl;
+    for (int i = 0; i < numberOfVertexes; ++i) {
+        for (int j = 0; j < numberOfVertexes; ++j) {
+            distanceMatrix[i][j] != INT_MAX ? cout << distanceMatrix[i][j] : cout << "i";
+            cout << " ";
+        }
+        cout << endl;
+    }
+
+    cout << endl << "Nodes order Matrix: " << endl;
+
+    for (int i = 0; i < numberOfVertexes; ++i) {
+        for (int j = 0; j < numberOfVertexes; ++j) {
+            nodeOrderMatrix[i][j] != INT_MAX ? cout << nodeOrderMatrix[i][j] : cout << "i";
+            cout << " ";
+        }
+        cout << endl;
+    }
+}
