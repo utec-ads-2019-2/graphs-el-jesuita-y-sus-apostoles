@@ -38,7 +38,6 @@ public:
     }
 
     ~Edge(){
-        delete To,From;
         To = nullptr;
         From = nullptr;
     }
