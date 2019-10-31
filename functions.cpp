@@ -8,6 +8,8 @@
 #include <cmath>
 #include <iomanip>
 
+void makeAirportsToJson(Graph<Airport> *graph, json &finalParsedJson);
+
 using pairOfIntsAndNodes = pair<int,Node<Airport>*>;
 
 Airport* newAirport(json dato){
@@ -88,13 +90,19 @@ void buildEdgeFromGraph(Node<Airport>* node, Graph<Airport>* graph){
 
 void parseToJsonTxt(Graph<Airport>* graph,  const string& fileout){
     ofstream ofs(fileout);
+    json finalParsedJson;
+    makeAirportsToJson(graph, finalParsedJson);
+    ofs<<std::setw(4)<<finalParsedJson<<endl;
+
+}
+
+void makeAirportsToJson(Graph<Airport> *graph, json &finalParsedJson) {
     int sizeOfGraph = graph->getMap()->size();
     map<int,Node<Airport>*>::iterator iterator = graph->getMap()->begin();
-    json finalParsedJson;
     for (int i = 0; i < sizeOfGraph; i++) {
         Airport* airportActual = iterator->second->getObject();
         list<Edge<Airport>*>* edgeActual = iterator->second->getEdges();
-        std::vector<int> destinos;
+        vector<int> destinos;
         for (list<Edge<Airport>*>::iterator j = edgeActual->begin(); j != edgeActual->end(); ++j) {
             destinos.push_back((*j)->getTo()->getID());
         }
@@ -111,20 +119,19 @@ void parseToJsonTxt(Graph<Airport>* graph,  const string& fileout){
         finalParsedJson.push_back(parsedJson);
         iterator++;
     }
-    ofs<<std::setw(4)<<finalParsedJson<<endl;
-
 }
 
 Graph<Airport>* buildGraph(json file){
-    auto* graph = new Graph<Airport>(); json allJsonAirports = std::move(file);
+    auto* graph = new Graph<Airport>();
+    json json1 = std::move(file);
     map< int, Node<Airport>* >* maps = graph->getMap();
-    for (const auto& jsonAirport : allJsonAirports) {
-        auto* airport = new Airport(jsonAirport);
+    for (const auto& json2 : json1) {
+        auto* airport = new Airport(json2);
         auto* node = new Node<Airport>(airport);
         node->setID(node->getObject()->getId());
         (maps)->insert(pairOfIntsAndNodes(node->getID(),node));
     }
-    int vertexes = allJsonAirports.size();
+    int vertexes = json1.size();
     graph->setVertexes(vertexes);
     for (auto j = maps->begin(); j != maps->end(); j++) {
         if (j->second != nullptr)

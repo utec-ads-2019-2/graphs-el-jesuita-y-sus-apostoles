@@ -71,7 +71,7 @@ class Graph{
                 else if((*it)->getTo()->getColor() == 'A'){
 
                 } else throw invalid_argument("Memory failure");
-                }
+            }
         }else if (color == 'A') {
             for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue ; ++it, thisValue++) {
                 if((*it)->getTo()->getColor() == 'B' ){
@@ -160,6 +160,26 @@ public:
             return false;
         }
     }
+    bool insertEdge(int idFrom, int idTo, int peso){
+        if (graphNodesMap->operator[](idFrom) != nullptr and graphNodesMap->operator[](idTo) != nullptr){
+            if(!findEdge(idFrom,idTo)){
+                auto* edge = new Edge<T>;
+                edge->setWeight(peso);
+                edge->setTo(graphNodesMap->operator[](idTo));
+                edge->setFrom(graphNodesMap->operator[](idFrom));
+                graphNodesMap->operator[](idFrom)->getEdges()->push_front(edge);
+                numberOfEdges++;
+                return true;
+            }else return false;
+
+        } else{
+            if (graphNodesMap->operator[](idFrom) == nullptr){
+                graphNodesMap->erase(idFrom);}
+            if (graphNodesMap->operator[](idTo) == nullptr){
+                graphNodesMap->erase(idTo);}
+            return false;
+        }
+    }
 
     bool insertNode(Node<T>* node){
         int id = node->getID();
@@ -194,10 +214,12 @@ public:
         }else{
             auto* From = graphNodesMap->operator[](idFrom);
             auto* toCompare = graphNodesMap->operator[](idTo);
-            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
-                Edge<Airport>* edge = *i;
-                if(edge->getTo() == toCompare )
-                    return true;
+            if(From->getEdges() != NULL and !(From->getEdges()->empty())){
+                for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
+                    Edge<T>* edge = *i;
+                    if(edge->getTo() == toCompare )
+                        return true;
+                }
             }
             return false;
         }
@@ -224,24 +246,24 @@ public:
     Graph<T>* prim(int idOfSource) {
         if (this->setIsNotDirected()) {
             auto* primGraph = new Graph();
-                Node<T>* FirstNode = new Node<T>(graphNodesMap->at(idOfSource)->getObject());
-                FirstNode->getEdges()->clear();
-                vector<list<Edge<T>*>> vectorOfListEdges;
-                list<Edge<T>*> edgesInsert = *(graphNodesMap->operator[](idOfSource)->getEdges());
-                vectorOfListEdges.push_back(edgesInsert);
-                Edge<T> minEdge;
-                while (!vectorOfListEdges.empty() and primGraph->getEdges()<2*graphNodesMap->size() and primGraph->getMap()->size()!=graphNodesMap->size()){
-                    minEdge = getMinEdgeFromVector(vectorOfListEdges);
-                    if(!(primGraph->findNode(minEdge.getTo()->getID()))){
-                        Node<T>* nodeToInsert = new Node<T>(minEdge.getTo()->getObject());
-                        nodeToInsert->setID(nodeToInsert->getObject()->getId());
-                        primGraph->insertNode(nodeToInsert);
-                        primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID());
-                        primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID());
-                        list<Edge<T>*> listToInsert = *(minEdge.getTo()->getEdges());
-                        vectorOfListEdges.push_back(*(minEdge.getTo()->getEdges()));
-                    }
+            Node<T>* FirstNode = new Node<T>(graphNodesMap->at(idOfSource)->getObject());
+            FirstNode->getEdges()->clear();
+            vector<list<Edge<T>*>> vectorOfListEdges;
+            list<Edge<T>*> edgesInsert = *(graphNodesMap->operator[](idOfSource)->getEdges());
+            vectorOfListEdges.push_back(edgesInsert);
+            Edge<T> minEdge;
+            while (!vectorOfListEdges.empty() and primGraph->getEdges()<2*graphNodesMap->size() and primGraph->getMap()->size()!=graphNodesMap->size()){
+                minEdge = getMinEdgeFromVector(vectorOfListEdges);
+                if(!(primGraph->findNode(minEdge.getTo()->getID()))){
+                    Node<T>* nodeToInsert = new Node<T>(minEdge.getTo()->getObject());
+                    nodeToInsert->setID(nodeToInsert->getObject()->getId());
+                    primGraph->insertNode(nodeToInsert);
+                    primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID(),minEdge.getWeight());
+                    primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID(),minEdge.getWeight());
+                    list<Edge<T>*> listToInsert = *(minEdge.getTo()->getEdges());
+                    vectorOfListEdges.push_back(*(minEdge.getTo()->getEdges()));
                 }
+            }
             return primGraph;
         }else{
             throw invalid_argument("Graph is directed");
@@ -266,7 +288,7 @@ public:
         }
         vectorOfListEdges.at(listPositionAtVector).erase(minIterador);
         if(vectorOfListEdges.at(listPositionAtVector).empty()){
-                vectorOfListEdges.erase(vectorOfListEdges.begin()+(listPositionAtVector));
+            vectorOfListEdges.erase(vectorOfListEdges.begin()+(listPositionAtVector));
         }
         return minEdge;
     }
@@ -296,6 +318,7 @@ public:
                 nodeTo->setID(nodeTo->getObject()->getId());
                 Node<T>* nodeFrom = new Node<T>(Edges->back()->getFrom()->getObject());
                 nodeFrom->setID(nodeFrom->getObject()->getId());
+                int peso =Edges->back()->getWeight();
                 Edges->pop_back();
                 nodeTo->getEdges()->clear();
                 nodeFrom->getEdges()->clear();
@@ -308,8 +331,8 @@ public:
                         kruskalMap->erase(nodeTo->getID());
                         kruskalMap->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
                     }
-                    kruskalgraph->insertEdge(nodeFrom->getID(),nodeTo->getID());
-                    kruskalgraph->insertEdge(nodeTo->getID(),nodeFrom->getID());
+                    kruskalgraph->insertEdge(nodeFrom->getID(),nodeTo->getID(),peso);
+                    kruskalgraph->insertEdge(nodeTo->getID(),nodeFrom->getID(),peso);
                 }
             }
             kruskalgraph->setVertexes(kruskalgraph->getMap()->size());
@@ -433,6 +456,7 @@ public:
         }
         return vectorBFS;
     }
+
 
     vector<int> DFS(int idOfSourceNode) {
         map<int, bool> visitedNodes;
