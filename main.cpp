@@ -6,8 +6,13 @@
 using namespace std;
 using json = nlohmann::json;
 
+class letra{
+    char letra;
+
+};
+
 int main() {
-    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("../jsonFiles/bipartito.json");
+    Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
     Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/notDirected.json");
     Graph<Airport>* directedGraph = readJsonAndReturnAirportGraph("../jsonFiles/directed.json");
     Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
@@ -17,13 +22,13 @@ int main() {
 
     //auto krusca=notDirectedGraph->Krusca();
 
-    if (connectedGraph->setIsConnected())
+    if (bipartiteGraph->setIsConnected())
         cout << "The graph is connected" << endl;
 
     if(bipartiteGraph->setIsBipartite())
         cout << "The graph is bipartite" << endl;
 
-    if(notDirectedGraph->setIsNotDirected())
+    if(bipartiteGraph->setIsNotDirected())
         cout << "The graph is not directed" << endl;
 
     if (!directedGraph->setIsNotDirected())
@@ -31,24 +36,5 @@ int main() {
 
     auto prim = notDirectedGraph->prim(1);
     auto krusca = notDirectedGraph->Kruskal();
-
-    if(prim->setIsNotDirected())
-        cout << "The graph is not directed" << endl;
-
-    if(krusca->setIsNotDirected())
-        cout << "The graph is not directed" << endl;
-
-    string filename;
-    cin>>filename;
-    filename = filename+".json";
-    parseToJsonTxt(krusca,filename);
-    cin>>filename;
-    filename = filename+".json";
-    parseToJsonTxt(prim,filename);
-  
-    delete bipartiteGraph;
-    delete directedGraph;
-    delete connectedGraph;
-    delete notDirectedGraph;
     return EXIT_SUCCESS;
 }

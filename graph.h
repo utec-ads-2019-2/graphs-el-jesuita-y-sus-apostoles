@@ -160,6 +160,26 @@ public:
             return false;
         }
     }
+    bool insertEdge(int idFrom, int idTo, int peso){
+        if (graphNodesMap->operator[](idFrom) != nullptr and graphNodesMap->operator[](idTo) != nullptr){
+            if(!findEdge(idFrom,idTo)){
+                auto* edge = new Edge<T>;
+                edge->setWeight(peso);
+                edge->setTo(graphNodesMap->operator[](idTo));
+                edge->setFrom(graphNodesMap->operator[](idFrom));
+                graphNodesMap->operator[](idFrom)->getEdges()->push_front(edge);
+                numberOfEdges++;
+                return true;
+            }else return false;
+
+        } else{
+            if (graphNodesMap->operator[](idFrom) == nullptr){
+                graphNodesMap->erase(idFrom);}
+            if (graphNodesMap->operator[](idTo) == nullptr){
+                graphNodesMap->erase(idTo);}
+            return false;
+        }
+    }
 
     bool insertNode(Node<T>* node){
         int id = node->getID();
@@ -194,10 +214,12 @@ public:
         }else{
             auto* From = graphNodesMap->operator[](idFrom);
             auto* toCompare = graphNodesMap->operator[](idTo);
-            for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
-                Edge<Airport>* edge = *i;
-                if(edge->getTo() == toCompare )
-                    return true;
+            if(From->getEdges() != NULL and !(From->getEdges()->empty())){
+                for (auto i = From->getEdges()->begin(); i != From->getEdges()->end() ; i++) {
+                    Edge<T>* edge = *i;
+                    if(edge->getTo() == toCompare )
+                        return true;
+                }
             }
             return false;
         }
@@ -236,8 +258,8 @@ public:
                         Node<T>* nodeToInsert = new Node<T>(minEdge.getTo()->getObject());
                         nodeToInsert->setID(nodeToInsert->getObject()->getId());
                         primGraph->insertNode(nodeToInsert);
-                        primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID());
-                        primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID());
+                        primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID(),minEdge.getWeight());
+                        primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID(),minEdge.getWeight());
                         list<Edge<T>*> listToInsert = *(minEdge.getTo()->getEdges());
                         vectorOfListEdges.push_back(*(minEdge.getTo()->getEdges()));
                     }
@@ -296,6 +318,7 @@ public:
                 nodeTo->setID(nodeTo->getObject()->getId());
                 Node<T>* nodeFrom = new Node<T>(Edges->back()->getFrom()->getObject());
                 nodeFrom->setID(nodeFrom->getObject()->getId());
+                int peso =Edges->back()->getWeight();
                 Edges->pop_back();
                 nodeTo->getEdges()->clear();
                 nodeFrom->getEdges()->clear();
@@ -308,8 +331,8 @@ public:
                         kruskalMap->erase(nodeTo->getID());
                         kruskalMap->insert(pair<int,Node<T>*>(nodeTo->getID(),nodeTo));
                     }
-                    kruskalgraph->insertEdge(nodeFrom->getID(),nodeTo->getID());
-                    kruskalgraph->insertEdge(nodeTo->getID(),nodeFrom->getID());
+                    kruskalgraph->insertEdge(nodeFrom->getID(),nodeTo->getID(),peso);
+                    kruskalgraph->insertEdge(nodeTo->getID(),nodeFrom->getID(),peso);
                 }
             }
             kruskalgraph->setVertexes(kruskalgraph->getMap()->size());

@@ -22,8 +22,11 @@ public:
   
     Node(){
         Object = nullptr;
-        listOfEdges = nullptr;
+        listOfEdges = new list<Edge<T>*>;
         color = 'B';}
+    void setObject(T* object){
+        Object = object;
+    }
 
     void setID(int id){Id = id;}
 
