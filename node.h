@@ -19,7 +19,7 @@ public:
         Object = object;
         listOfEdges = new list<Edge<T>*>;
         color = 'B';}
-  
+
     Node(){
         Object = nullptr;
         listOfEdges = new list<Edge<T>*>;

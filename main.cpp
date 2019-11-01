@@ -6,11 +6,6 @@
 using namespace std;
 using json = nlohmann::json;
 
-class letra{
-    char letra;
-
-};
-
 int main() {
     Graph<Airport>* bipartiteGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
     Graph<Airport>* notDirectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/notDirected.json");
@@ -36,5 +31,6 @@ int main() {
 
     auto prim = notDirectedGraph->prim(1);
     auto krusca = notDirectedGraph->Kruskal();
+
     return EXIT_SUCCESS;
 }

@@ -71,7 +71,7 @@ class Graph{
                 else if((*it)->getTo()->getColor() == 'A'){
 
                 } else throw invalid_argument("Memory failure");
-                }
+            }
         }else if (color == 'A') {
             for (auto it = toTest->getEdges()->begin(); thisValue < FinalValue ; ++it, thisValue++) {
                 if((*it)->getTo()->getColor() == 'B' ){
@@ -246,24 +246,24 @@ public:
     Graph<T>* prim(int idOfSource) {
         if (this->setIsNotDirected()) {
             auto* primGraph = new Graph();
-                Node<T>* FirstNode = new Node<T>(graphNodesMap->at(idOfSource)->getObject());
-                FirstNode->getEdges()->clear();
-                vector<list<Edge<T>*>> vectorOfListEdges;
-                list<Edge<T>*> edgesInsert = *(graphNodesMap->operator[](idOfSource)->getEdges());
-                vectorOfListEdges.push_back(edgesInsert);
-                Edge<T> minEdge;
-                while (!vectorOfListEdges.empty() and primGraph->getEdges()<2*graphNodesMap->size() and primGraph->getMap()->size()!=graphNodesMap->size()){
-                    minEdge = getMinEdgeFromVector(vectorOfListEdges);
-                    if(!(primGraph->findNode(minEdge.getTo()->getID()))){
-                        Node<T>* nodeToInsert = new Node<T>(minEdge.getTo()->getObject());
-                        nodeToInsert->setID(nodeToInsert->getObject()->getId());
-                        primGraph->insertNode(nodeToInsert);
-                        primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID(),minEdge.getWeight());
-                        primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID(),minEdge.getWeight());
-                        list<Edge<T>*> listToInsert = *(minEdge.getTo()->getEdges());
-                        vectorOfListEdges.push_back(*(minEdge.getTo()->getEdges()));
-                    }
+            Node<T>* FirstNode = new Node<T>(graphNodesMap->at(idOfSource)->getObject());
+            FirstNode->getEdges()->clear();
+            vector<list<Edge<T>*>> vectorOfListEdges;
+            list<Edge<T>*> edgesInsert = *(graphNodesMap->operator[](idOfSource)->getEdges());
+            vectorOfListEdges.push_back(edgesInsert);
+            Edge<T> minEdge;
+            while (!vectorOfListEdges.empty() and primGraph->getEdges()<2*graphNodesMap->size() and primGraph->getMap()->size()!=graphNodesMap->size()){
+                minEdge = getMinEdgeFromVector(vectorOfListEdges);
+                if(!(primGraph->findNode(minEdge.getTo()->getID()))){
+                    Node<T>* nodeToInsert = new Node<T>(minEdge.getTo()->getObject());
+                    nodeToInsert->setID(nodeToInsert->getObject()->getId());
+                    primGraph->insertNode(nodeToInsert);
+                    primGraph->insertEdge(minEdge.getFrom()->getID(),minEdge.getTo()->getID(),minEdge.getWeight());
+                    primGraph->insertEdge(minEdge.getTo()->getID(),minEdge.getFrom()->getID(),minEdge.getWeight());
+                    list<Edge<T>*> listToInsert = *(minEdge.getTo()->getEdges());
+                    vectorOfListEdges.push_back(*(minEdge.getTo()->getEdges()));
                 }
+            }
             return primGraph;
         }else{
             throw invalid_argument("Graph is directed");
@@ -288,7 +288,7 @@ public:
         }
         vectorOfListEdges.at(listPositionAtVector).erase(minIterador);
         if(vectorOfListEdges.at(listPositionAtVector).empty()){
-                vectorOfListEdges.erase(vectorOfListEdges.begin()+(listPositionAtVector));
+            vectorOfListEdges.erase(vectorOfListEdges.begin()+(listPositionAtVector));
         }
         return minEdge;
     }
