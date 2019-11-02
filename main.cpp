@@ -2,6 +2,7 @@
 #include "nlohmann/json.hpp"
 #include "functions.cpp"
 #include "node.h"
+#include "Dijsktra.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -18,6 +19,7 @@ public:
         return id;
     }
 };
+
 
 int main() {
     Graph<caracter>* grafo = new Graph<caracter>;
@@ -50,6 +52,8 @@ int main() {
     grafo->insertEdge(2,10,15); grafo->insertEdge(10,2,15);
     grafo->insertEdge(4,10,15); grafo->insertEdge(10,4,15);
 
+    dijsktra<caracter>* node = new dijsktra<caracter>(grafo,grafo->getMap()->at(1));
+    node->calculate();
     if(grafo->setIsConnected()){
         cout<<"Es conexo"<<endl;
     }
