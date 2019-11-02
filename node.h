@@ -14,7 +14,11 @@ class Node {
     list< Edge<T>* >* listOfEdges;
     int Id;
     char color;
+    bool visited= false;
+
 public:
+    bool isVisited(){ return visited;}
+
     explicit Node(T* object){
         Object = object;
         listOfEdges = new list<Edge<T>*>;
