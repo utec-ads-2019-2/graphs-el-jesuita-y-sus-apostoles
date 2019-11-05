@@ -52,8 +52,12 @@ int main() {
     grafo->insertEdge(2,10,15); grafo->insertEdge(10,2,15);
     grafo->insertEdge(4,10,15); grafo->insertEdge(10,4,15);
 
+    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
     dijsktra<caracter>* node = new dijsktra<caracter>(grafo,grafo->getMap()->at(1));
+    dijsktra<Airport>* airports = new dijsktra<Airport>(connectedGraph,connectedGraph->getMap()->at(1));
     node->calculate();
+    airports->calculate();
+    parseToJsonTxt(airports->getClosestPath(4),"trydo.json");
     if(grafo->setIsConnected()){
         cout<<"Es conexo"<<endl;
     }

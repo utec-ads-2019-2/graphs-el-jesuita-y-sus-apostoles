@@ -121,6 +121,60 @@ void makeAirportsToJson(Graph<Airport> *graph, json &finalParsedJson) {
     }
 }
 
+void makeAirportsToJson(list<Edge<Airport>*> *edges, json &finalParsedJson) {
+    int sizeOfGraph = edges->size();
+    list<Edge<Airport>*>::iterator iterator = edges->begin();
+    for (int i = 0; i < sizeOfGraph; i++) {
+        Airport* airportActual = (*iterator)->getTo()->getObject();
+        list<Edge<Airport>*>* edgeActual = (*iterator)->getTo()->getEdges();
+        vector<int> destinos;
+        for (list<Edge<Airport>*>::iterator j = edgeActual->begin(); j != edgeActual->end(); ++j) {
+            destinos.push_back((*j)->getTo()->getID());
+        }
+        json departures(destinos);
+        json parsedJson = {
+                {"City", airportActual->getCity()},
+                {"Name", airportActual->getName()},
+                {"Country", airportActual->getCountry()},
+                {"Longitude", airportActual->getLongitude()},
+                {"Latitude", airportActual->getLatitude()},
+                {"Id", airportActual->getId()}
+        };
+        parsedJson["destinations"] = departures;
+        finalParsedJson.push_back(parsedJson);
+        iterator++;
+    }
+}
+
+void makePathToJson(list<Node<Airport>*>* closesPath, json &finalParsedJson){
+    for (auto iterador = closesPath->begin() ; iterador != closesPath->end() ; ++iterador) {
+        Airport* airportActual = (*iterador)->getObject();
+        list<Edge<Airport>*>* edgeActual = (*iterador)->getEdges();
+        vector<int> destinos;
+        for (list<Edge<Airport>*>::iterator j = edgeActual->begin(); j != edgeActual->end(); ++j) {
+            destinos.push_back((*j)->getTo()->getID());
+        }
+        json departures(destinos);
+        json parsedJson = {
+                {"City", airportActual->getCity()},
+                {"Name", airportActual->getName()},
+                {"Country", airportActual->getCountry()},
+                {"Longitude", airportActual->getLongitude()},
+                {"Latitude", airportActual->getLatitude()},
+                {"Id", airportActual->getId()}
+        };
+        parsedJson["destinations"] = departures;
+        finalParsedJson.push_back(parsedJson);
+    }
+}
+void parseToJsonTxt(list<Node<Airport>*>* graph,  const string& fileout){
+    ofstream ofs(fileout);
+    json finalParsedJson;
+    makePathToJson(graph, finalParsedJson);
+    ofs<<std::setw(4)<<finalParsedJson<<endl;
+
+}
+
 Graph<Airport>* buildGraph(json file){
     auto* graph = new Graph<Airport>();
     json json1 = std::move(file);

@@ -35,8 +35,9 @@ public:
     void nodeIsVisited(){
         this->visited= true;
     }
+    NodeDijsktra<A>* getBeforeDijstra(){return before;};
     Node<A>* getActual(){ return node;}
-    Node<A>* getBefore(){ return before;}
+    Node<A>* getBefore(){ return before->getActual();}
     list<Edge<A>*>* getEdge(){ return node->getEdges();}
     int getDistance(){ return distance;}
     ~NodeDijsktra(){
@@ -88,6 +89,24 @@ public:
             nodeOrderByDistance.pop();
             actual->nodeIsVisited();
         }
+    }
+
+    list<Node<T>*>* getClosestPath(int id){
+        try {
+            NodeDijsktra<T>* initialNode=nodes->at(id);
+            NodeDijsktra<T>* actual=initialNode->getBeforeDijstra();
+            list<Node<T>*> * closesPath = new list<Node<T>*>;
+            closesPath->push_back(initialNode->getActual());
+            closesPath->push_back(actual->getActual());
+            while (actual->getBeforeDijstra() != nullptr){
+                actual = actual->getBeforeDijstra();
+                closesPath->push_back(actual->getActual());
+            }
+            return closesPath;
+        }catch (exception &e){
+            throw out_of_range("Id not in map");
+        }
+
     }
 };
 #endif //GRAFO01_DIJSKTRA_H
