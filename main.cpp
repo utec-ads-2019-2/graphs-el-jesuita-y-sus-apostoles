@@ -3,6 +3,7 @@
 #include "functions.cpp"
 #include "node.h"
 #include "Dijsktra.h"
+#include "floyd_warshall.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -69,6 +70,10 @@ int main() {
     }
     auto prim = grafo->prim(1);
     auto krus = grafo->Kruskal();
+
+    FloydWarshall<caracter> *floydWarshall = new FloydWarshall<caracter>(grafo);
+    floydWarshall->printAdjacencyMatrix();
+
 
     return EXIT_SUCCESS;
 }
