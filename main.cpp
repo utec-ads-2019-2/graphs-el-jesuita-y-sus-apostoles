@@ -71,9 +71,14 @@ int main() {
     auto prim = grafo->prim(1);
     auto krus = grafo->Kruskal();
 
-    FloydWarshall<caracter> *floydWarshall = new FloydWarshall<caracter>(grafo);
-    floydWarshall->printAdjacencyMatrix();
+    FloydWarshall<caracter> *floydWarshall1 = new FloydWarshall<caracter>(grafo);
+    floydWarshall1->printAdjacencyMatrix();
+    floydWarshall1->printSequenceMatrix();
 
+    floydWarshall1->calculate();
+
+    floydWarshall1->printAdjacencyMatrix();
+    floydWarshall1->printSequenceMatrix();
 
     return EXIT_SUCCESS;
 }

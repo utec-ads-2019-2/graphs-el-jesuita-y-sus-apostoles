@@ -261,7 +261,7 @@ void floydWarshall() {
                     nodeOrderMatrixIterations[i][j] = iterationNumber + 1;
                 } else {
                     distanceMatrixIterations[i][j] = distanceMatrix[i][j];
-                    nodeOrderMatrixIterations[i][j] = nodeOrderMatrixIterations[i][j];
+                    nodeOrderMatrixIterations[i][j] = nodeOrderMatrix[i][j];
                 }
             }
         }
