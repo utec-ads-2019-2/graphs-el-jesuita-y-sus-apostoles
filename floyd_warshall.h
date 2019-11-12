@@ -16,9 +16,6 @@ class FloydWarshall {
     unsigned int numberOfVertexes;
 public:
     explicit FloydWarshall(Graph<T>* graph) {
-        if (graph->setIsNotDirected())
-            throw invalid_argument("Cannot perform Floyd Warshall's algorithm in not directed graphs");
-
         for (auto it : *graph->getMap())
             idsOfNodes.push_back(it.first);
 
@@ -47,9 +44,6 @@ public:
     }
 
     void calculate() {
-        //float adjacencyMatrixForIterations[numberOfVertexes][numberOfVertexes];
-        //int sequenceMatrixForIterations[numberOfVertexes][numberOfVertexes];
-
         vector<vector<float>* > *adjacencyMatrixForIterations = new vector<vector<float>* >(numberOfVertexes);
         vector<vector<int>* >* sequenceMatrixForIterations = new vector<vector<int>* >(numberOfVertexes);
         for (int i = 0; i < numberOfVertexes; ++i) {
@@ -129,6 +123,19 @@ public:
             cout << endl;
         }
         cout << endl;
+    }
+
+    ~FloydWarshall() {
+        while (!adjacencyMatrix->empty()) {
+            adjacencyMatrix->back()->clear();
+            adjacencyMatrix->pop_back();
+        }
+        while (!sequenceMatrix->empty()) {
+            sequenceMatrix->back()->clear();
+            sequenceMatrix->pop_back();
+        }
+        idsOfNodes.clear();
+        numberOfVertexes = 0;
     }
 };
 

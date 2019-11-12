@@ -4,6 +4,7 @@
 #include "node.h"
 #include "Dijsktra.h"
 #include "floyd_warshall.h"
+#include "bellman_ford.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -79,6 +80,10 @@ int main() {
 
     floydWarshall1->printAdjacencyMatrix();
     floydWarshall1->printSequenceMatrix();
+
+    BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 1);
+    bellmanFord->calculate();
+    bellmanFord->print();
 
     return EXIT_SUCCESS;
 }
