@@ -16,8 +16,8 @@ class FloydWarshall {
     unsigned int numberOfVertexes;
 public:
     explicit FloydWarshall(Graph<T>* graph) {
-        if (!graph->setIsNotDirected())
-            throw invalid_argument("Cannot perform Floyd Warshall's algorithm on directed graphs");
+        if (graph->setIsNotDirected())
+            throw invalid_argument("Cannot perform Floyd Warshall's algorithm in not directed graphs");
 
         for (auto it : *graph->getMap())
             idsOfNodes.push_back(it.first);
