@@ -10,7 +10,7 @@ using namespace std;
 
 template <class T>
 class Graph{
-    map< int , Node<T>* > *graphNodesMap;
+    map< int , Node<T> *> *graphNodesMap;
     int numberOfEdges = 0;
     int numberOfVertexes = 0;
     double density = 0;

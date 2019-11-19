@@ -81,9 +81,15 @@ int main() {
     floydWarshall1->printAdjacencyMatrix();
     floydWarshall1->printSequenceMatrix();
 
-    BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 1);
+    BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
     bellmanFord->calculate();
     bellmanFord->print();
+    list<Edge<caracter> * > *shortestPaths = bellmanFord->getShortestPaths();
+    list<Node<caracter> * > *shortestPathsNodes = bellmanFord->getNodesOfShortestPaths();
+
+    BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, connectedGraph->getMap()->at(1)->getID());
+    //airports2->calculate();
+    //parseToJsonTxt(airports2->getNodesOfShortestPaths(), "trydo2.json");
 
     return EXIT_SUCCESS;
 }
