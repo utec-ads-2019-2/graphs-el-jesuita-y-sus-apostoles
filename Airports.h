@@ -14,6 +14,7 @@ private:
     string City;
     string Name;
     string Country;
+    //Usar para Heureliano
     double Longitude;
     double Latitude;
     int Id;

@@ -5,6 +5,7 @@
 #include "Dijsktra.h"
 #include "floyd_warshall.h"
 #include "bellman_ford.h"
+#include "A-Star.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -84,6 +85,11 @@ int main() {
     BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 1);
     bellmanFord->calculate();
     bellmanFord->print();
+//  A*
+    auto airports2 = new Astar<Airport>(connectedGraph,connectedGraph->getMap()->at(7252),
+                                        connectedGraph->getMap()->at(2789));
+
+
 
 
 

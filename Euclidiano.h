@@ -15,7 +15,7 @@ class Euclidiano{
     bool nextNodo;
 public:
     Euclidiano(Node<E>* _node){
-        
+
     }
 
 };
