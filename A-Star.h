@@ -25,6 +25,14 @@ public:
     }
 
     int getDistance(){ return distance;}
+
+    int getID() {
+        return node->getID();
+    }
+
+    list< Edge<A>* >* getEdges(){
+        return node->getEdges();
+    }
 };
 
 template <class Q>
@@ -37,14 +45,14 @@ public:
 
 template <class T>
 class Astar {
-    map<int,NodeAStar<T>* >* nodes;
+    unordered_map<int,NodeAStar<T>* >* nodes;
     NodeAStar<T>* source;
     NodeAStar<T>* destiny;
     unordered_map<int, double> heuristic;
-
+    unordered_map<int, double> dist;
 public:
     Astar(Graph<T>* graph,Node<T>* idNodeSource, Node<T>* idNodeDestiny) {
-        nodes = new map<int,NodeAStar<T>*>;
+        nodes = new unordered_map<int,NodeAStar<T>*>;
 
         source = new NodeAStar<T>(idNodeSource);
         destiny = new NodeAStar<T>(idNodeDestiny);
@@ -63,8 +71,54 @@ public:
                              idNodeSource->getObject()->getLongitude(), 2);
 
                 heuristic[iter->second->getID()] = a + b;
+
+                dist[iter->second->getID()] = INFINITY;
             }
 
+        }
+    }
+
+    void calculate() {
+        unordered_map<int, int> parent;
+        priority_queue<pair<double, int>, std::vector<pair<double, int>>, greater<>> pq;
+        unordered_map<int, double > qp;
+        double total_dist;
+
+        dist[source->getID()] = 0;
+        parent[source->getID()] = source->getID();
+
+        pq.push( make_pair(0, source->getID()) );
+        qp[source->getID()] = 0;
+
+        while(!pq.empty()) {
+            auto u_node = pq.top().second;
+
+            pq.pop();
+            qp.erase(u_node);
+
+            if (u_node == destiny->getID() )
+                break;
+
+            //Neighboors
+            auto edges = this->nodes[u_node];
+            for (auto edge: edges) {
+                //auto w_node = edge->nodes[1]->data;
+                auto w_node = edge.second->getID();
+                //auto distance = dist[u_node] + edge.weight;
+                auto distance = dist[u_node] + edge.second->getDistance();
+
+                if(qp.find(w_node) != qp.end() and dist[w_node] > distance) {
+                    dist[w_node] = distance;
+
+                    parent[w_node] = u_node;
+                } else if (parent.find(w_node) == parent.end() ) {
+                    dist[w_node] = distance;
+                    total_dist = distance + heuristic[u_node];
+                    parent[w_node] = u_node;
+                    pq.push({total_dist, w_node});
+                    qp[w_node] = total_dist;
+                }
+            }
         }
     }
 };
