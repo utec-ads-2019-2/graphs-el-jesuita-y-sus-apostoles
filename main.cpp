@@ -5,6 +5,7 @@
 #include "Dijsktra.h"
 #include "floyd_warshall.h"
 #include "bellman_ford.h"
+#include <chrono>
 
 using namespace std;
 using json = nlohmann::json;
@@ -24,6 +25,8 @@ public:
 
 
 int main() {
+    auto start = chrono::high_resolution_clock::now();
+
     Graph<caracter>* grafo = new Graph<caracter>;
     for (int i = 0; i <10 ; ++i) {
         caracter* a = new caracter(65+i,i+1);
@@ -55,6 +58,7 @@ int main() {
     grafo->insertEdge(4,10,15); grafo->insertEdge(10,4,15);
 
     Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
+    Graph<Airport> *conexGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
     dijsktra<caracter>* node = new dijsktra<caracter>(grafo,grafo->getMap()->at(1));
     dijsktra<Airport>* airports = new dijsktra<Airport>(connectedGraph,connectedGraph->getMap()->at(1));
     node->calculate();
@@ -72,24 +76,66 @@ int main() {
     auto prim = grafo->prim(1);
     auto krus = grafo->Kruskal();
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - F L O Y D W A R S H A L L - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     FloydWarshall<caracter> *floydWarshall1 = new FloydWarshall<caracter>(grafo);
-    floydWarshall1->printAdjacencyMatrix();
-    floydWarshall1->printSequenceMatrix();
+//    floydWarshall1->printAdjacencyMatrix();
+//    floydWarshall1->printSequenceMatrix();
 
     floydWarshall1->calculate();
 
-    floydWarshall1->printAdjacencyMatrix();
-    floydWarshall1->printSequenceMatrix();
+//    floydWarshall1->printAdjacencyMatrix();
+//    floydWarshall1->printSequenceMatrix();
+
+    Graph<int> *graph2 = new Graph<int>;
+
+    for (int i = 2; i <= 10; i += 2)
+    {
+        auto newNode = new Node<int>();
+        newNode->setID(i);
+        graph2->insertNode(newNode);
+    }
+
+    graph2->insertEdge(2, 4, 1);
+    graph2->insertEdge(4, 6, 2);
+    graph2->insertEdge(6, 8, 3);
+    graph2->insertEdge(8, 2, 4);
+    graph2->insertEdge(4, 10, 1);
+    graph2->insertEdge(10, 8, 3);
+
+    auto floyd2 = new FloydWarshall<int>(graph2);
+//    floyd2->printAdjacencyMatrix();
+//    floyd2->printSequenceMatrix();
+//    floyd2->calculate();
+//    floyd2->printAdjacencyMatrix();
+//    floyd2->printSequenceMatrix();
+
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - B E L L M A N F O R D - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
-    bellmanFord->calculate();
-    bellmanFord->print();
-    list<Edge<caracter> * > *shortestPaths = bellmanFord->getShortestPaths();
-    list<Node<caracter> * > *shortestPathsNodes = bellmanFord->getNodesOfShortestPaths();
+//    bellmanFord->calculate();
+//    bellmanFord->print();
 
-    BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, connectedGraph->getMap()->at(1)->getID());
-    //airports2->calculate();
-    //parseToJsonTxt(airports2->getNodesOfShortestPaths(), "trydo2.json");
+    BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
+    airports2->calculate();
+    airports2->print();
+
+    list<Edge<Airport> *> *edgesOfBellmanFord = airports2->getClosestPathsEdges();
+    parseToJsonTxt(edgesOfBellmanFord, "bellmanford.txt");
+
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - T I M E - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+    cout << duration.count() / 1000000.f << endl;
 
     return EXIT_SUCCESS;
 }

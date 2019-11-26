@@ -125,6 +125,14 @@ public:
         cout << endl;
     }
 
+    vector<vector<float> *> *getAdjacencyMatrix() const {
+        return adjacencyMatrix;
+    }
+
+    vector<vector<int> *> *getSequenceMatrix() const {
+        return sequenceMatrix;
+    }
+
     ~FloydWarshall() {
         while (!adjacencyMatrix->empty()) {
             adjacencyMatrix->back()->clear();
