@@ -134,20 +134,6 @@ int main() {
                                         connectedGraph->getMap()->at(270));
     parseToJsonTxt(airports2->calculate(),"trydo2.json");
 //    bellmanFord->print();
-    list<Edge<caracter> *> *edges = bellmanFord->getClosestPathsEdges();
-
-    BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
-    //airports2->calculate();
-//    airports2->print();
-
-    list<Edge<Airport> *> *edgesOfBellmanFord = airports2->getClosestPathsEdges();
-    parseToJsonTxt(edgesOfBellmanFord, "../output/BellmanFord.json");
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - - - - - - - - D F S B F S - - - - - - - - - -
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    Graph<caracter> *grafoDFS = grafo->DFS(1);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -177,7 +163,6 @@ int main() {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    Graph<caracter> *grafoBFS = grafo->BFS(1);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - O T H E R - - - - - - - - - - -
@@ -189,9 +174,6 @@ int main() {
     // - - - - - - - - - - - T I M E - - - - - - - - - - - -
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    auto end = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
-    cout << duration.count() / 1000000.f << endl;
 
     return EXIT_SUCCESS;
 }
