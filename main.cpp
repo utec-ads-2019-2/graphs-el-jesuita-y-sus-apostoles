@@ -120,9 +120,10 @@ int main() {
     BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
     bellmanFord->calculate();
 //    bellmanFord->print();
+    list<Edge<caracter> *> *edges = bellmanFord->getClosestPathsEdges();
 
     BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
-    airports2->calculate();
+    //airports2->calculate();
 //    airports2->print();
 
     list<Edge<Airport> *> *edgesOfBellmanFord = airports2->getClosestPathsEdges();

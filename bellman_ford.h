@@ -83,7 +83,18 @@ public:
             vector<int> currentPath = buildPath((*it).first);
             for (unsigned long i = 0; i < currentPath.size() - 1; ++i)
                 if (find(closestPathsEdges->begin(), closestPathsEdges->end(), findEdge(currentPath[i], currentPath[i + 1])) == closestPathsEdges->end())
-                    closestPathsEdges->push_back(findEdge(currentPath[i], currentPath[i + 1]));
+                {
+                    Edge<T> *currentEdge = findEdge(currentPath[i], currentPath[i + 1]);
+                    Node<T> *from = new Node<T>(), *to = new Node<T>();
+                    from->operator=(*(currentEdge->getFrom()));
+                    to->operator=(*(currentEdge->getTo()));
+                    Edge<T> *newEdge = new Edge<T>;
+                    newEdge->setFrom(from);
+                    newEdge->setTo(to);
+                    newEdge->setWeight(currentEdge->getWeight());
+                    closestPathsEdges->push_back(newEdge);
+                }
+
         }
         return closestPathsEdges;
     }
