@@ -36,6 +36,14 @@ class Graph{
         other->insertNode(newNode);
     }
 
+    void insertNodeOfThisToOther2(int id, Graph<T> *other)
+    {
+        Node<T>* newNode = new Node<T>;
+        Node<T>* current = (*graphNodesMap)[id];
+        newNode->operator=(*current);
+        other->insertNode(newNode);
+    }
+
     bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
         if (graphNodesMap->operator[](idFrom) == nullptr){
             graphNodesMap->erase(idFrom);
@@ -132,7 +140,8 @@ class Graph{
         auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
         for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
             if (!visitedNodes[(*it)->getTo()->getID()]) {
-                insertNodeOfThisToOther((*it)->getTo()->getID(), graph);
+                //insertNodeOfThisToOther((*it)->getTo()->getID(), graph);
+                insertNodeOfThisToOther2((*it)->getTo()->getID(), graph);
                 graph->insertEdge(idOfNode, (*it)->getTo()->getID(), (*it)->getWeight());
                 privateDFS((*it)->getTo()->getID(), visitedNodes, graph);
             }
@@ -457,7 +466,7 @@ public:
 
         visitedNodes[idOfSource] = true;
 
-        insertNodeOfThisToOther(idOfSource, graph);
+        insertNodeOfThisToOther2(idOfSource, graph);
 
         list<int> keepTrackOfNodes;
         keepTrackOfNodes.push_back(idOfSource);
@@ -469,7 +478,7 @@ public:
             for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
                 if (!visitedNodes[(*it)->getTo()->getID()]) {
                     visitedNodes[(*it)->getTo()->getID()] = true;
-                    insertNodeOfThisToOther((*it)->getTo()->getID(), graph);
+                    insertNodeOfThisToOther2((*it)->getTo()->getID(), graph);
                     graph->insertEdge(currentParent, (*it)->getTo()->getID(), (*it)->getWeight());
                     keepTrackOfNodes.push_back((*it)->getTo()->getID());
                 }
@@ -484,7 +493,8 @@ public:
 
         Graph<T> *graphDFS = new Graph<T>;
 
-        insertNodeOfThisToOther(idOfSourceNode, graphDFS);
+        //insertNodeOfThisToOther(idOfSourceNode, graphDFS);
+        insertNodeOfThisToOther2(idOfSourceNode, graphDFS);
 
         for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
             visitedNodes[it->first] = false;
