@@ -122,11 +122,11 @@ int main() {
 //    bellmanFord->print();
 
     BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
-//    airports2->calculate();
+    airports2->calculate();
 //    airports2->print();
 
     list<Edge<Airport> *> *edgesOfBellmanFord = airports2->getClosestPathsEdges();
-    parseToJsonTxt(edgesOfBellmanFord, "bellmanford.txt");
+    parseToJsonTxt(edgesOfBellmanFord, "../output/BellmanFord.txt");
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - D F S B F S - - - - - - - - - -
@@ -136,7 +136,17 @@ int main() {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<Airport> *airportBFS = connectedGraph->BFS(1);
+    parseToJsonTxt(airportBFS, "../output/airportBFS.txt");
+
+    Graph<Airport> *airportDFS = connectedGraph->BFS(1);
+    parseToJsonTxt(airportDFS, "../output/airportDFS.txt");
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     Graph<int> *graphDFStest = new Graph<int>();
+
     for (int i = 1; i <= 4; ++i)
     {
         Node<int> *newNode = new Node<int>();
