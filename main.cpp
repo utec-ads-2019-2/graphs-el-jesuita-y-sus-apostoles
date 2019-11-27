@@ -90,12 +90,8 @@ int main() {
     bellmanFord->print();
     */
 //  A*
-    auto airports2 = new Astar<Airport>(connectedGraph,connectedGraph->getMap()->at(7252),
-                                        connectedGraph->getMap()->at(2789));
-
-
-
-
-
+    auto airports2 = new Astar<Airport>(connectedGraph,connectedGraph->getMap()->at(3984),
+                                        connectedGraph->getMap()->at(270));
+    parseToJsonTxt(airports2->calculate(),"trydo2.json");
     return EXIT_SUCCESS;
 }
