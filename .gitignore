@@ -59,3 +59,8 @@ Building/conaninfo.txt
 Building/graph_info.json
 .idea/vcs.xml
 .idea/.name
+build/graph_info.json
+build/conaninfo.txt
+build/conanbuildinfo.txt
+build/conanbuildinfo.cmake
+build/conan.lock

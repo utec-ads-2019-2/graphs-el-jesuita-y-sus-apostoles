@@ -5,6 +5,7 @@
 #include "Dijsktra.h"
 #include "floyd_warshall.h"
 #include "bellman_ford.h"
+#include "A-Star.h"
 #include <chrono>
 
 using namespace std;
@@ -25,6 +26,9 @@ public:
 
 
 int main() {
+
+
+/*
     auto start = chrono::high_resolution_clock::now();
 
     Graph<caracter>* grafo = new Graph<caracter>;
@@ -56,6 +60,9 @@ int main() {
     grafo->insertEdge(8,10,15); grafo->insertEdge(10,8,15);
     grafo->insertEdge(2,10,15); grafo->insertEdge(10,2,15);
     grafo->insertEdge(4,10,15); grafo->insertEdge(10,4,15);
+*/
+    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("jsonFiles/airports.json");
+    /*
 
     Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
     Graph<Airport> *conexGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
@@ -119,6 +126,13 @@ int main() {
 
     BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
     bellmanFord->calculate();
+<<<<<< new
+    bellmanFord->print();
+    */
+//  A*
+    auto airports2 = new Astar<Airport>(connectedGraph,connectedGraph->getMap()->at(3984),
+                                        connectedGraph->getMap()->at(270));
+    parseToJsonTxt(airports2->calculate(),"trydo2.json");
 //    bellmanFord->print();
     list<Edge<caracter> *> *edges = bellmanFord->getClosestPathsEdges();
 
