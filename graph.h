@@ -108,14 +108,28 @@ class Graph{
         return respt;
     }
 
-    void privateDFS(int idOfNode, map<int, bool> &visitedNodes, vector<int> &vectorDFS) {
+    void privateDFS(int idOfNode, map<int, bool> &visitedNodes, vector<int> &vectorDFS, Graph<T> *graph) {
         visitedNodes[idOfNode] = true;
         vectorDFS.push_back(idOfNode);
 
         auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
         for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
             if (!visitedNodes[(*it)->getTo()->getID()]) {
-                privateDFS((*it)->getTo()->getID(), visitedNodes, vectorDFS);
+
+                Node<T>* newNode = new Node<T>;
+                newNode->setID((*it)->getTo()->getID());
+
+                Node<T> *currentNode = (*graphNodesMap)[(*it)->getTo()->getID()];
+                T objectData = *(currentNode->getObject());
+
+                T* newObject = &objectData;
+                newNode->setObject(newObject);
+
+                graph->insertNode(newNode);
+
+                graph->insertEdge(idOfNode, (*it)->getTo()->getID(), (*it)->getWeight());
+
+                privateDFS((*it)->getTo()->getID(), visitedNodes, vectorDFS, graph);
             }
         }
     }
@@ -454,13 +468,29 @@ public:
     }
 
 
-    vector<int> DFS(int idOfSourceNode) {
+    Graph<T>* DFS(int idOfSourceNode) {
         map<int, bool> visitedNodes;
         vector<int> vectorDFS;
+
+        Graph<T> *graphDFS = new Graph<T>;
+
+        Node<T>* newNode = new Node<T>;
+        newNode->setID(idOfSourceNode);
+
+        Node<T> *currentNode = (*graphNodesMap)[idOfSourceNode];
+        T objectData = *(currentNode->getObject());
+
+        T* newObject = &objectData;
+        newNode->setObject(newObject);
+
+        graphDFS->insertNode(newNode);
+
         for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
             visitedNodes[it->first] = false;
-        privateDFS(idOfSourceNode, visitedNodes, vectorDFS);
-        return vectorDFS;
+
+
+        privateDFS(idOfSourceNode, visitedNodes, vectorDFS, graphDFS);
+        return graphDFS;
     }
 
 
