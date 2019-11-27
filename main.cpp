@@ -135,6 +135,26 @@ int main() {
     Graph<caracter> *grafoDFS = grafo->DFS(1);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<int> *graphDFStest = new Graph<int>();
+    for (int i = 1; i <= 4; ++i)
+    {
+        Node<int> *newNode = new Node<int>();
+        newNode->setID(i);
+        graphDFStest->insertNode(newNode);
+    }
+
+    graphDFStest->insertEdge(1, 2, 1);
+    graphDFStest->insertEdge(1, 3, 2);
+    graphDFStest->insertEdge(3, 4, 3);
+
+    auto graphDFStestResult = graphDFStest->DFS(1);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<caracter> *grafoBFS = grafo->BFS(1);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - T I M E - - - - - - - - - - - -
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
