@@ -9,75 +9,104 @@
 #include "graph.h"
 
 template <class T>
-class BellmanFord {
-    vector<float> *distances;
-    vector<int> *predecessors;
-    int sourceVertex;
-    vector<Edge<T>* > *listOfEdgesOfGraph;
-    vector<int> idsOfNodes;
-    unsigned int numberOfVertexes;
-public:
-    BellmanFord(Graph<T>* graph, int sourceVertex) {
-        idsOfNodes.push_back(sourceVertex);
-        for (auto it : *graph->getMap())
-            if (it.first != sourceVertex)
-                idsOfNodes.push_back(it.first);
+class BellmanFord
+{
+    vector<Edge<T> *> listOfEdgesOfGraph;
+    int numberOfVertexes;
+    map<int, double> distanceToNode;
+    map<int, int> previous;
+    list<Edge<T>* > *closestPathsEdges;
+    int idOfSourceVertex;
 
-        this->sourceVertex = sourceVertex;
-        distances = new vector<float>(graph->getMap()->size(), INT_MAX);
-        predecessors = new vector<int>(graph->getMap()->size(), 0);
-        listOfEdgesOfGraph = new vector<Edge<T>* >;
-
-        (*distances)[0] = 0;
-
-        for (auto it = graph->getMap()->begin(); it != graph->getMap()->end(); ++it)
-            if (!it->second->getEdges()->empty())
-                for (auto it2 = it->second->getEdges()->begin(); it2 != it->second->getEdges()->end(); ++it2)
-                    listOfEdgesOfGraph->push_back(*it2);
-
-        numberOfVertexes = graph->getMap()->size();
+    vector<int> buildPath(int idOfNodeTo)
+    {
+        vector<int> currentPath;
+        currentPath.insert(currentPath.begin(), idOfNodeTo);
+        while (previous[idOfNodeTo] != idOfSourceVertex)
+        {
+            currentPath.insert(currentPath.begin(), previous[idOfNodeTo]);
+            idOfNodeTo = previous[idOfNodeTo];
+        }
+        currentPath.insert(currentPath.begin(), idOfSourceVertex);
+        return currentPath;
     }
 
-    void calculate() {
-        for (int i = 0; i < numberOfVertexes; ++i) {
-            bool somethingHasChangedInThisIteration = false;
-            for (auto it = listOfEdgesOfGraph->begin(); it != listOfEdgesOfGraph->end(); ++it) {
-                int from = (*it)->getFrom()->getID(), to = (*it)->getTo()->getID(),
-                indexOfNodeFrom = distance(idsOfNodes.begin(), find(idsOfNodes.begin(), idsOfNodes.end(), from)),
-                indexOfNodeTo = distance(idsOfNodes.begin(), find(idsOfNodes.begin(), idsOfNodes.end(), to));
-                if ((*distances)[indexOfNodeTo] > (*distances)[indexOfNodeFrom] + (*it)->getWeight()) {
-                    somethingHasChangedInThisIteration = true;
-                    distances->at(indexOfNodeTo) = (*distances)[indexOfNodeFrom] + (*it)->getWeight();
-                    predecessors->at(indexOfNodeTo) = from;
+
+    Edge<T>* findEdge(int idFrom, int idTo)
+    {
+        for (auto it = listOfEdgesOfGraph.begin(); it != listOfEdgesOfGraph.end(); ++it)
+            if ((*it)->getTo()->getID() == idTo and (*it)->getFrom()->getID() == idFrom)
+                return *it;
+    }
+
+public:
+    BellmanFord(Graph<T> *graph, int idOfSourceVertex)
+    {
+        for (auto it = graph->getMap()->begin(); it != graph->getMap()->end(); ++it)
+        {
+            for (auto it2 = (*it).second->getEdges()->begin(); it2 != (*it).second->getEdges()->end(); ++it2)
+                listOfEdgesOfGraph.push_back(*it2);
+            distanceToNode[(*it).first] = INT_MAX;
+        }
+
+        numberOfVertexes = graph->getMap()->size();
+        distanceToNode[idOfSourceVertex] = 0;
+
+        closestPathsEdges = new list<Edge<T>* >;
+        this->idOfSourceVertex = idOfSourceVertex;
+    }
+
+    void calculate()
+    {
+        for (int i = 0; i < numberOfVertexes; ++i)
+        {
+            bool somethingHasChanged = false;
+            for (auto it = listOfEdgesOfGraph.begin(); it != listOfEdgesOfGraph.end(); ++it)
+            {
+                //cout << "from " << (*it)->getFrom()->getID() << " to " << (*it)->getTo()->getID() << " weight " << (*it)->getWeight() << endl;
+                if (distanceToNode[(*it)->getTo()->getID()] > distanceToNode[(*it)->getFrom()->getID()] + (*it)->getWeight())
+                {
+                    distanceToNode[(*it)->getTo()->getID()] = distanceToNode[(*it)->getFrom()->getID()] + (*it)->getWeight();
+                    previous[(*it)->getTo()->getID()] = (*it)->getFrom()->getID();
+                    somethingHasChanged = true;
                 }
             }
-            if (i == numberOfVertexes - 1 and somethingHasChangedInThisIteration)
-                throw invalid_argument("There is a negative cycle in this graph.");
+            if (i == numberOfVertexes - 1 and somethingHasChanged)
+                throw invalid_argument ("There is a negative cycle in the graph");
         }
     }
 
-    void print() {
-        cout << setw(15) << "IDs";
-        for (int i = 0; i < numberOfVertexes; ++i)
-            cout << setw(5) << idsOfNodes[i];
+    list<Edge<T> *> *getClosestPathsEdges()
+    {
+        for (auto it = previous.begin(); it != previous.end(); ++it)
+        {
+            vector<int> currentPath = buildPath((*it).first);
+            for (unsigned long i = 0; i < currentPath.size() - 1; ++i)
+                if (find(closestPathsEdges->begin(), closestPathsEdges->end(), findEdge(currentPath[i], currentPath[i + 1])) == closestPathsEdges->end())
+                {
+                    Edge<T> *currentEdge = findEdge(currentPath[i], currentPath[i + 1]);
+                    Node<T> *from = new Node<T>(), *to = new Node<T>();
+                    from->operator=(*(currentEdge->getFrom()));
+                    to->operator=(*(currentEdge->getTo()));
+                    Edge<T> *newEdge = new Edge<T>;
+                    newEdge->setFrom(from);
+                    newEdge->setTo(to);
+                    newEdge->setWeight(currentEdge->getWeight());
+                    closestPathsEdges->push_back(newEdge);
+                }
 
-        cout << endl << setw(15) << "Distances";
-
-        for (float & distance : *distances)
-            cout << setw(5) << distance;
-
-        cout << endl << setw(15) << "Predecessors";
-
-        for (int & id : *predecessors)
-            cout << setw(5) << id;
-
-        cout << endl;
+        }
+        return closestPathsEdges;
     }
 
-    ~BellmanFord() {
-        distances->clear();
-        predecessors->clear();
-        idsOfNodes.clear();
+    void print()
+    {
+        cout << setw(15) << "node" << setw(15) << "weight" << endl;
+        for (auto it : distanceToNode)
+            cout << setw(15) << it.first << setw(15) << it.second << endl;
+        cout << setw(15) << "node" << setw(15) << "predecessor" << endl;
+        for (auto it : previous)
+            cout << setw(15) << it.first << setw(15) << it.second << endl;
     }
 };
 

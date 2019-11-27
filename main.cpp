@@ -6,6 +6,7 @@
 #include "floyd_warshall.h"
 #include "bellman_ford.h"
 #include "A-Star.h"
+#include <chrono>
 
 using namespace std;
 using json = nlohmann::json;
@@ -26,7 +27,10 @@ public:
 
 int main() {
 
+
 /*
+    auto start = chrono::high_resolution_clock::now();
+
     Graph<caracter>* grafo = new Graph<caracter>;
     for (int i = 0; i <10 ; ++i) {
         caracter* a = new caracter(65+i,i+1);
@@ -59,6 +63,9 @@ int main() {
 */
     Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("jsonFiles/airports.json");
     /*
+
+    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
+    Graph<Airport> *conexGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
     dijsktra<caracter>* node = new dijsktra<caracter>(grafo,grafo->getMap()->at(1));
     dijsktra<Airport>* airports = new dijsktra<Airport>(connectedGraph,connectedGraph->getMap()->at(1));
     node->calculate();
@@ -76,22 +83,115 @@ int main() {
     auto prim = grafo->prim(1);
     auto krus = grafo->Kruskal();
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - F L O Y D W A R S H A L L - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     FloydWarshall<caracter> *floydWarshall1 = new FloydWarshall<caracter>(grafo);
-    floydWarshall1->printAdjacencyMatrix();
-    floydWarshall1->printSequenceMatrix();
+//    floydWarshall1->printAdjacencyMatrix();
+//    floydWarshall1->printSequenceMatrix();
 
     floydWarshall1->calculate();
 
-    floydWarshall1->printAdjacencyMatrix();
-    floydWarshall1->printSequenceMatrix();
+//    floydWarshall1->printAdjacencyMatrix();
+//    floydWarshall1->printSequenceMatrix();
 
-    BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 1);
+    Graph<int> *graph2 = new Graph<int>;
+
+    for (int i = 2; i <= 10; i += 2)
+    {
+        auto newNode = new Node<int>();
+        newNode->setID(i);
+        graph2->insertNode(newNode);
+    }
+
+    graph2->insertEdge(2, 4, 1);
+    graph2->insertEdge(4, 6, 2);
+    graph2->insertEdge(6, 8, 3);
+    graph2->insertEdge(8, 2, 4);
+    graph2->insertEdge(4, 10, 1);
+    graph2->insertEdge(10, 8, 3);
+
+    auto floyd2 = new FloydWarshall<int>(graph2);
+//    floyd2->printAdjacencyMatrix();
+//    floyd2->printSequenceMatrix();
+//    floyd2->calculate();
+//    floyd2->printAdjacencyMatrix();
+//    floyd2->printSequenceMatrix();
+
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - B E L L M A N F O R D - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
     bellmanFord->calculate();
+<<<<<< new
     bellmanFord->print();
     */
 //  A*
     auto airports2 = new Astar<Airport>(connectedGraph,connectedGraph->getMap()->at(3984),
                                         connectedGraph->getMap()->at(270));
     parseToJsonTxt(airports2->calculate(),"trydo2.json");
+//    bellmanFord->print();
+    list<Edge<caracter> *> *edges = bellmanFord->getClosestPathsEdges();
+
+    BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
+    //airports2->calculate();
+//    airports2->print();
+
+    list<Edge<Airport> *> *edgesOfBellmanFord = airports2->getClosestPathsEdges();
+    parseToJsonTxt(edgesOfBellmanFord, "../output/BellmanFord.json");
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - D F S B F S - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<caracter> *grafoDFS = grafo->DFS(1);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<Airport> *airportBFS = connectedGraph->BFS(1);
+    parseToJsonTxt(airportBFS, "../output/airportBFS.json");
+
+    Graph<Airport> *airportDFS = connectedGraph->BFS(1);
+    parseToJsonTxt(airportDFS, "../output/airportDFS.json");
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Graph<int> *graphDFStest = new Graph<int>();
+
+    for (int i = 1; i <= 4; ++i)
+    {
+        Node<int> *newNode = new Node<int>();
+        newNode->setID(i);
+        graphDFStest->insertNode(newNode);
+    }
+
+    graphDFStest->insertEdge(1, 2, 1);
+    graphDFStest->insertEdge(1, 3, 2);
+    graphDFStest->insertEdge(3, 4, 3);
+
+    auto graphDFStestResult = graphDFStest->DFS(1);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<caracter> *grafoBFS = grafo->BFS(1);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - O T H E R - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+//    Graph<caracter> *graphBuiltFromEdges = new Graph<caracter>(bellmanFord->getClosestPathsEdges());
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - T I M E - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+    cout << duration.count() / 1000000.f << endl;
+
     return EXIT_SUCCESS;
 }

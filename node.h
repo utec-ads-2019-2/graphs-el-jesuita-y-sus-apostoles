@@ -46,6 +46,14 @@ public:
         Node::color = c;
     }
 
+    Node<T>& operator=(const Node<T> &other)
+    {
+        listOfEdges = new list<Edge<T>* >;
+        Id = other.Id;
+        Object = other.Object;
+        return *this;
+    }
+
     ~Node(){
         delete listOfEdges;
         delete Object;

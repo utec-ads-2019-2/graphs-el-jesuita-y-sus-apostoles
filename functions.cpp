@@ -175,6 +175,14 @@ void parseToJsonTxt(list<Node<Airport>*>* graph,  const string& fileout){
 
 }
 
+void parseToJsonTxt(list<Edge<Airport> *> *edges, const string& fileout)
+{
+    ofstream ofs(fileout);
+    json finalParsedJson;
+    makeAirportsToJson(edges, finalParsedJson);
+    ofs << std::setw(4) << finalParsedJson << endl;
+}
+
 Graph<Airport>* buildGraph(json file){
     auto* graph = new Graph<Airport>();
     json json1 = std::move(file);

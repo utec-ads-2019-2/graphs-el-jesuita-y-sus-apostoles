@@ -10,13 +10,39 @@ using namespace std;
 
 template <class T>
 class Graph{
-    map< int , Node<T>* > *graphNodesMap;
+    map< int , Node<T> *> *graphNodesMap;
     int numberOfEdges = 0;
     int numberOfVertexes = 0;
     double density = 0;
     bool isNotDirected = false;
     bool isConnected = false;
     bool isBipartite = false;
+
+    void insertNodeOfThisToOther(int id, Graph<T> *other)
+    {
+        Node<T>* newNode = new Node<T>;
+        newNode->setID(id);
+
+        Node<T> *currentNode = (*graphNodesMap)[id];
+        if (currentNode->getObject() != nullptr)
+        {
+            T objectData = *(currentNode->getObject());
+
+            T* newObject = &objectData;
+            newNode->setObject(newObject);
+
+        }
+
+        other->insertNode(newNode);
+    }
+
+    void insertNodeOfThisToOther2(int id, Graph<T> *other)
+    {
+        Node<T>* newNode = new Node<T>;
+        Node<T>* current = (*graphNodesMap)[id];
+        newNode->operator=(*current);
+        other->insertNode(newNode);
+    }
 
     bool findEdge(int idFrom, int idTo, typename std::list<Edge<T>*>::iterator & guidePtr ){
         if (graphNodesMap->operator[](idFrom) == nullptr){
@@ -108,20 +134,38 @@ class Graph{
         return respt;
     }
 
-    void privateDFS(int idOfNode, map<int, bool> &visitedNodes, vector<int> &vectorDFS) {
+    void privateDFS(int idOfNode, map<int, bool> &visitedNodes, Graph<T> *graph) {
         visitedNodes[idOfNode] = true;
-        vectorDFS.push_back(idOfNode);
 
         auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
         for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
             if (!visitedNodes[(*it)->getTo()->getID()]) {
-                privateDFS((*it)->getTo()->getID(), visitedNodes, vectorDFS);
+                //insertNodeOfThisToOther((*it)->getTo()->getID(), graph);
+                insertNodeOfThisToOther2((*it)->getTo()->getID(), graph);
+                graph->insertEdge(idOfNode, (*it)->getTo()->getID(), (*it)->getWeight());
+                privateDFS((*it)->getTo()->getID(), visitedNodes, graph);
             }
         }
     }
 
 public:
     Graph(){graphNodesMap = new map< int , Node<T>* >;}
+
+//    Graph(list<Edge<T> *> *edges)
+//    {
+//        for (auto it = edges->begin(); it != edges->end(); ++it)
+//        {
+//            Node<T> *nodeFrom = new Node<T>;
+//            Node<T> *nodeTo = new Node<T>;
+//            nodeFrom->operator=(*(*it)->getFrom());
+//            nodeTo->operator=(*(*it)->getTo());
+//
+//            insertNode(nodeFrom);
+//            insertNode(nodeTo);
+//
+//            insertEdge(nodeFrom->getID(), nodeTo->getID(), (*it)->getWeight());
+//        }
+//    }
 
     map< int , Node<T>* >* getMap(){ return graphNodesMap;}
 
@@ -429,38 +473,51 @@ public:
         }
     }
 
-    vector<int> BFS(int idOfSource) {
+    Graph<T>* BFS(int idOfSource) {
+        Graph<T> *graph = new Graph<T>();
+
         map<int, bool> visitedNodes;
         for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
             visitedNodes[it->first] = false;
 
         visitedNodes[idOfSource] = true;
+
+        insertNodeOfThisToOther2(idOfSource, graph);
+
         list<int> keepTrackOfNodes;
         keepTrackOfNodes.push_back(idOfSource);
-        vector<int> vectorBFS;
+
         while(!keepTrackOfNodes.empty()) {
-            int idOfNode = keepTrackOfNodes.front();
-            vectorBFS.push_back(idOfNode);
+            int currentParent = keepTrackOfNodes.front();
             keepTrackOfNodes.pop_front();
-            auto listOfEdges = graphNodesMap->operator[](idOfNode)->getEdges();
+            auto listOfEdges = graphNodesMap->operator[](currentParent)->getEdges();
             for (auto it = listOfEdges->begin(); it != listOfEdges->end(); ++it) {
                 if (!visitedNodes[(*it)->getTo()->getID()]) {
                     visitedNodes[(*it)->getTo()->getID()] = true;
+                    insertNodeOfThisToOther2((*it)->getTo()->getID(), graph);
+                    graph->insertEdge(currentParent, (*it)->getTo()->getID(), (*it)->getWeight());
                     keepTrackOfNodes.push_back((*it)->getTo()->getID());
                 }
             }
         }
-        return vectorBFS;
+        return graph;
     }
 
 
-    vector<int> DFS(int idOfSourceNode) {
+    Graph<T>* DFS(int idOfSourceNode) {
         map<int, bool> visitedNodes;
-        vector<int> vectorDFS;
+
+        Graph<T> *graphDFS = new Graph<T>;
+
+        //insertNodeOfThisToOther(idOfSourceNode, graphDFS);
+        insertNodeOfThisToOther2(idOfSourceNode, graphDFS);
+
         for (auto it = graphNodesMap->begin(); it != graphNodesMap->end(); ++it)
             visitedNodes[it->first] = false;
-        privateDFS(idOfSourceNode, visitedNodes, vectorDFS);
-        return vectorDFS;
+
+
+        privateDFS(idOfSourceNode, visitedNodes, graphDFS);
+        return graphDFS;
     }
 
 
