@@ -48,6 +48,7 @@ public:
 
     Node<T>& operator=(const Node<T> &other)
     {
+        listOfEdges = new list<Edge<T>* >;
         Id = other.Id;
         Object = other.Object;
         return *this;

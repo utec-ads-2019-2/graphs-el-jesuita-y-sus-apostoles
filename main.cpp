@@ -118,7 +118,7 @@ int main() {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
-//    bellmanFord->calculate();
+    bellmanFord->calculate();
 //    bellmanFord->print();
 
     BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
@@ -153,6 +153,12 @@ int main() {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     Graph<caracter> *grafoBFS = grafo->BFS(1);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - O T H E R - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+//    Graph<caracter> *graphBuiltFromEdges = new Graph<caracter>(bellmanFord->getClosestPathsEdges());
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - T I M E - - - - - - - - - - - -

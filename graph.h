@@ -151,6 +151,22 @@ class Graph{
 public:
     Graph(){graphNodesMap = new map< int , Node<T>* >;}
 
+//    Graph(list<Edge<T> *> *edges)
+//    {
+//        for (auto it = edges->begin(); it != edges->end(); ++it)
+//        {
+//            Node<T> *nodeFrom = new Node<T>;
+//            Node<T> *nodeTo = new Node<T>;
+//            nodeFrom->operator=(*(*it)->getFrom());
+//            nodeTo->operator=(*(*it)->getTo());
+//
+//            insertNode(nodeFrom);
+//            insertNode(nodeTo);
+//
+//            insertEdge(nodeFrom->getID(), nodeTo->getID(), (*it)->getWeight());
+//        }
+//    }
+
     map< int , Node<T>* >* getMap(){ return graphNodesMap;}
 
     list<Edge<T>* >* getSortEdgesWeight() {

@@ -16,7 +16,6 @@ class BellmanFord
     map<int, double> distanceToNode;
     map<int, int> previous;
     list<Edge<T>* > *closestPathsEdges;
-    vector<Edge<T>* > *closestPathsEdgesV;
     int idOfSourceVertex;
 
     vector<int> buildPath(int idOfNodeTo)
@@ -54,19 +53,7 @@ public:
         distanceToNode[idOfSourceVertex] = 0;
 
         closestPathsEdges = new list<Edge<T>* >;
-        closestPathsEdgesV = new vector<Edge<T>* >;
         this->idOfSourceVertex = idOfSourceVertex;
-    }
-
-    vector<Edge<T> *> *getClosestPathsEdgesV() {
-        for (auto it = previous.begin(); it != previous.end(); ++it)
-        {
-            vector<int> currentPath = buildPath((*it).first);
-            for (unsigned long i = 0; i < currentPath.size() - 1; ++i)
-                if (find(closestPathsEdgesV->begin(), closestPathsEdgesV->end(), findEdge(currentPath[i], currentPath[i + 1])) == closestPathsEdgesV->end())
-                    closestPathsEdgesV->push_back(findEdge(currentPath[i], currentPath[i + 1]));
-        }
-        return closestPathsEdgesV;
     }
 
     void calculate()
