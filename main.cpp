@@ -176,6 +176,10 @@ int main() {
 
 //    Graph<caracter> *graphBuiltFromEdges = new Graph<caracter>(bellmanFord->getClosestPathsEdges());
 
+    BellmanFord<Airport> bl(connectedGraph, 1);
+    bl.calculate();
+    bl.print();
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - T I M E - - - - - - - - - - - -
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -

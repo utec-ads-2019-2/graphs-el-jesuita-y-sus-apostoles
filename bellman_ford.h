@@ -58,6 +58,7 @@ public:
 
     void calculate()
     {
+        int count = 0;
         for (int i = 0; i < numberOfVertexes; ++i)
         {
             bool somethingHasChanged = false;
@@ -73,6 +74,12 @@ public:
             }
             if (i == numberOfVertexes - 1 and somethingHasChanged)
                 throw invalid_argument ("There is a negative cycle in the graph");
+            if (somethingHasChanged)
+                count = 0;
+            else
+                ++count;
+            if (count == 2)
+                return;
         }
     }
 
