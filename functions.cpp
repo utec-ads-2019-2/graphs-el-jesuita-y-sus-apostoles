@@ -136,9 +136,9 @@ void makeAirportsToJson(list<Edge<Airport>*> *edges, json &finalParsedJson) {
                 {"City", airportActual->getCity()},
                 {"Name", airportActual->getName()},
                 {"Country", airportActual->getCountry()},
-                {"Longitude", airportActual->getLongitude()},
-                {"Latitude", airportActual->getLatitude()},
-                {"Id", airportActual->getId()}
+                {"Longitude", to_string(airportActual->getLongitude())},
+                {"Latitude", to_string(airportActual->getLatitude())},
+                {"Id", to_string(airportActual->getId())}
         };
         parsedJson["destinations"] = departures;
         finalParsedJson.push_back(parsedJson);
@@ -150,18 +150,18 @@ void makePathToJson(list<Node<Airport>*>* closesPath, json &finalParsedJson){
     for (auto iterador = closesPath->begin() ; iterador != closesPath->end() ; ++iterador) {
         Airport* airportActual = (*iterador)->getObject();
         list<Edge<Airport>*>* edgeActual = (*iterador)->getEdges();
-        vector<int> destinos;
+        vector<string> destinos;
         for (list<Edge<Airport>*>::iterator j = edgeActual->begin(); j != edgeActual->end(); ++j) {
-            destinos.push_back((*j)->getTo()->getID());
+            destinos.push_back(to_string((*j)->getTo()->getID()));
         }
         json departures(destinos);
         json parsedJson = {
                 {"City", airportActual->getCity()},
                 {"Name", airportActual->getName()},
                 {"Country", airportActual->getCountry()},
-                {"Longitude", airportActual->getLongitude()},
-                {"Latitude", airportActual->getLatitude()},
-                {"Id", airportActual->getId()}
+                {"Longitude", to_string(airportActual->getLongitude())},
+                {"Latitude", to_string(airportActual->getLatitude())},
+                {"Id", to_string(airportActual->getId())}
         };
         parsedJson["destinations"] = departures;
         finalParsedJson.push_back(parsedJson);

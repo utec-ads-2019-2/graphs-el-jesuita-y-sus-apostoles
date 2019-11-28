@@ -1,0 +1,57 @@
+[
+    {
+        "City": "Harbin",
+        "Country": "China",
+        "Id": "3400",
+        "Latitude": "45.623403",
+        "Longitude": "126.250328",
+        "Name": "Taiping",
+        "destinations": [
+
+        ]
+    },
+    {
+        "City": "Niigata",
+        "Country": "Japan",
+        "Id": "4381",
+        "Latitude": "37.571100",
+        "Longitude": "139.064600",
+        "Name": "Niigata",
+        "destinations": [
+            "3400"
+        ]
+    },
+    {
+        "City": "Tokyo",
+        "Country": "Japan",
+        "Id": "2279",
+        "Latitude": "35.764722",
+        "Longitude": "140.386389",
+        "Name": "Narita Intl",
+        "destinations": [
+            "4381"
+        ]
+    },
+    {
+        "City": "Port Moresby",
+        "Country": "Papua New Guinea",
+        "Id": "5",
+        "Latitude": "-9.443383",
+        "Longitude": "147.220050",
+        "Name": "Port Moresby Jacksons Intl",
+        "destinations": [
+            "2279"
+        ]
+    },
+    {
+        "City": "Goroka",
+        "Country": "Papua New Guinea",
+        "Id": "1",
+        "Latitude": "-6.081689",
+        "Longitude": "145.391881",
+        "Name": "Goroka",
+        "destinations": [
+            "5"
+        ]
+    }
+]

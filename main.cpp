@@ -5,7 +5,6 @@
 #include "Dijsktra.h"
 #include "floyd_warshall.h"
 #include "bellman_ford.h"
-#include "A-Star.h"
 #include <chrono>
 
 using namespace std;
@@ -26,9 +25,6 @@ public:
 
 
 int main() {
-
-
-/*
     auto start = chrono::high_resolution_clock::now();
 
     Graph<caracter>* grafo = new Graph<caracter>;
@@ -60,17 +56,19 @@ int main() {
     grafo->insertEdge(8,10,15); grafo->insertEdge(10,8,15);
     grafo->insertEdge(2,10,15); grafo->insertEdge(10,2,15);
     grafo->insertEdge(4,10,15); grafo->insertEdge(10,4,15);
-*/
-    Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("jsonFiles/airports.json");
-    /*
 
     Graph<Airport>* connectedGraph = readJsonAndReturnAirportGraph("../jsonFiles/airports.json");
     Graph<Airport> *conexGraph = readJsonAndReturnAirportGraph("../jsonFiles/conexo.json");
+
+
     dijsktra<caracter>* node = new dijsktra<caracter>(grafo,grafo->getMap()->at(1));
     dijsktra<Airport>* airports = new dijsktra<Airport>(connectedGraph,connectedGraph->getMap()->at(1));
     node->calculate();
     airports->calculate();
-    parseToJsonTxt(airports->getClosestPath(4),"trydo.json");
+
+    parseToJsonTxt(airports->getClosestPath(3400),"../output/dijkstra1.json");
+
+
     if(grafo->setIsConnected()){
         cout<<"Es conexo"<<endl;
     }
@@ -88,13 +86,13 @@ int main() {
     // - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     FloydWarshall<caracter> *floydWarshall1 = new FloydWarshall<caracter>(grafo);
-//    floydWarshall1->printAdjacencyMatrix();
-//    floydWarshall1->printSequenceMatrix();
+    floydWarshall1->printAdjacencyMatrix();
+    floydWarshall1->printSequenceMatrix();
 
     floydWarshall1->calculate();
 
-//    floydWarshall1->printAdjacencyMatrix();
-//    floydWarshall1->printSequenceMatrix();
+    floydWarshall1->printAdjacencyMatrix();
+    floydWarshall1->printSequenceMatrix();
 
     Graph<int> *graph2 = new Graph<int>;
 
@@ -126,14 +124,21 @@ int main() {
 
     BellmanFord<caracter> *bellmanFord = new BellmanFord<caracter>(grafo, 2);
     bellmanFord->calculate();
-<<<<<< new
     bellmanFord->print();
-    */
-//  A*
-    auto airports2 = new Astar<Airport>(connectedGraph,connectedGraph->getMap()->at(3984),
-                                        connectedGraph->getMap()->at(270));
-    parseToJsonTxt(airports2->calculate(),"trydo2.json");
-//    bellmanFord->print();
+    list<Edge<caracter> *> *edges = bellmanFord->getClosestPathsEdges();
+
+    BellmanFord<Airport> *airports2 = new BellmanFord<Airport>(connectedGraph, 1);
+    //airports2->calculate();
+//    airports2->print();
+
+    list<Edge<Airport> *> *edgesOfBellmanFord = airports2->getClosestPathsEdges();
+    parseToJsonTxt(edgesOfBellmanFord, "../output/BellmanFord.json");
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - D F S B F S - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    Graph<caracter> *grafoDFS = grafo->DFS(1);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -163,6 +168,7 @@ int main() {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    Graph<caracter> *grafoBFS = grafo->BFS(1);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - - - - - - - - - - - O T H E R - - - - - - - - - - -
@@ -174,6 +180,9 @@ int main() {
     // - - - - - - - - - - - T I M E - - - - - - - - - - - -
     // - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+    cout << duration.count() / 1000000.f << endl;
 
     return EXIT_SUCCESS;
 }
